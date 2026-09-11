@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#02060d] text-[#ebdcb9]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE PIRATE CIPHER | Cursed Cryptography</title>
+  <meta name="description" content="Secret pirate encryption and decryption missives using AES-256 and ancient ciphers on the high seas." />
+
+  <!-- Google Fonts for Pirate Atmosphere -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            abyss: {
+              950: '#02060d',
+              900: '#060d17',
+              800: '#0d1a2d',
+              700: '#162b49',
+            },
+            parchment: {
+              100: '#fdfbf7',
+              200: '#f6f0df',
+              300: '#ebdcb9',
+              400: '#dec28f',
+              500: '#cca564',
+            },
+            doubloon: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            blood: {
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            },
+            kraken: {
+              500: '#0d9488',
+              400: '#14b8a6',
+              300: '#2dd4bf',
+            },
+            brass: '#cca564',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Confetti library for treasure explosion -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body class="bg-abyss-950 text-parchment-200 min-h-screen relative overflow-x-hidden selection:bg-doubloon-500/30 selection:text-doubloon-300">
+
+  <!-- Dark ocean vignette background -->
+  <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-abyss-900/60 via-abyss-950 to-[#010409] -z-10"></div>
+
+  <!-- Header Bar -->
+  <header class="w-full border-b border-brass/20 bg-abyss-950/80 backdrop-blur-md px-3 sm:px-6 md:px-12 py-3 md:py-4 flex flex-wrap items-center justify-between gap-2.5 sticky top-0 z-40">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a href="/" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-abyss-900 border border-brass/40 flex items-center justify-center hover:border-doubloon-400 transition shrink-0" title="Return to Voyage">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </a>
+      <div>
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <h1 class="font-pirate text-xl sm:text-2xl md:text-3xl text-parchment-200 tracking-wider">
+            THE PIRATE'S CIPHER
+          </h1>
+          <span class="px-2 py-0.5 rounded-full bg-blood-900/60 border border-blood-600/50 text-[9px] sm:text-[10px] font-cinzel text-blood-300 font-bold uppercase">
+            AES-256 Sealed
+          </span>
+        </div>
+        <p class="font-cinzel text-[9px] sm:text-[10px] md:text-xs text-doubloon-400/80 uppercase tracking-widest hidden sm:block">
+          Sender Pirate Encrypts • Receiver Pirate Decrypts
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1.5 sm:gap-3 flex-wrap">
+      <!-- Steganography Link -->
+      <a href="/steganography" class="flex items-center gap-2 bg-abyss-900/90 hover:bg-abyss-800 border border-kraken-400/50 hover:border-kraken-300 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-kraken-300 shadow-md transition">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Steganography</span>
+      </a>
+
+      <!-- Attack Simulator Link -->
+      <a href="/attack-simulator" class="flex items-center gap-2 bg-gradient-to-r from-blood-700/80 to-red-900/80 hover:brightness-110 border border-blood-500/60 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-white shadow-md transition">
+        <span>⚔️ Attack Simulator</span>
+      </a>
+
+      <!-- Audio toggle -->
+      <button id="audio-toggle-btn" class="flex items-center gap-2 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/40 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-parchment-200 shadow-md transition hover:border-doubloon-400">
+        <svg class="w-3.5 h-3.5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="audio-status-text" class="text-[11px] text-parchment-300">Audio: OFF</span>
+      </button>
+
+      <a href="/" class="flex items-center gap-2 bg-doubloon-500 hover:bg-doubloon-400 text-abyss-950 font-cinzel font-bold px-4 py-1.5 rounded-full text-xs shadow-lg transition">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+        <span>Back to Voyage</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Dual-Pirate Station -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Hero intro banner -->
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <h2 class="font-pirate text-4xl sm:text-5xl md:text-6xl gold-gradient-text tracking-wide mb-3">
+        Whispers in Blood & Gold
+      </h2>
+      <p class="font-parchment italic text-parchment-300 text-base md:text-lg leading-relaxed">
+        "No royal navy shall decipher the coordinates of our sunken spoils. Cast your missive into cryptographic iron, sealed with the blood of the Brethren Court."
+      </p>
+    </div>
+
+    <!-- Dual Column Layout: Sender Pirate (Left) vs Receiver Pirate (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start relative">
+
+      <!-- ================= SENDER PIRATE (CAPTAIN) ================= -->
+      <div class="parchment-box rounded-3xl border border-brass/50 p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[640px]">
+        <!-- Top header decoration -->
+        <div class="flex items-center justify-between border-b border-brass/20 pb-4 mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-abyss-900 border border-doubloon-400/50 flex items-center justify-center text-2xl shadow-inner">
+              🏴‍☠️
+            </div>
+            <div>
+              <span class="font-cinzel text-[10px] text-doubloon-400 font-bold uppercase tracking-widest block">
+                Persona I • The Sender
+              </span>
+              <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
+                Captain Blackbeard's Missive
+              </h3>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-doubloon-500/10 border border-doubloon-400/40 text-[10px] font-cinzel text-doubloon-300">
+            Encryptor Desk
+          </span>
+        </div>
+
+        <div class="space-y-4 flex-1">
+          <!-- Secret Plaintext Message -->
+          <div>
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>Secret Pirate Missive:</span>
+              <span class="text-[10px] text-parchment-400/80 font-normal">Choose preset or type below</span>
+            </label>
+            <!-- Preset Chips -->
+            <div class="flex flex-wrap gap-1.5 mb-2">
+              <button type="button" onclick="setSampleMessage(1)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                📜 Aztec Gold Coordinates
+              </button>
+              <button type="button" onclick="setSampleMessage(2)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                ⚡ Fleet Mutiny Warning
+              </button>
+              <button type="button" onclick="setSampleMessage(3)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                🏝️ Tortuga Rendezvous
+              </button>
+            </div>
+            <textarea
+              id="sender-message"
+              rows="4"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-doubloon-400 rounded-xl p-3 text-sm font-parchment text-parchment-100 placeholder-parchment-500/50 outline-none transition resize-none shadow-inner"
+              placeholder="Inscribe your secret orders, treasure coordinates, or battle plans here..."
+            >The Aztec treasure chest lies 40 fathoms beneath Skull Rock. Meet the Black Pearl under the blood moon.</textarea>
+          </div>
+
+          <!-- Encryption Algorithm Toggle -->
+          <div>
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5">
+              Cryptographic Armor:
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-abyss-900/80 border border-brass/30 cursor-pointer hover:border-doubloon-400 transition" id="label-algo-aes">
+                <input type="radio" name="algorithm" value="aes" checked class="accent-amber-500" onchange="onAlgoChange('aes')">
+                <div>
+                  <span class="font-cinzel text-xs font-bold text-doubloon-400 block">AES-256-GCM</span>
+                  <span class="text-[10px] text-parchment-400 block">PBKDF2 Salted + Authenticated</span>
+                </div>
+              </label>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-abyss-900/80 border border-brass/30 cursor-pointer hover:border-doubloon-400 transition" id="label-algo-caesar">
+                <input type="radio" name="algorithm" value="caesar" class="accent-amber-500" onchange="onAlgoChange('caesar')">
+                <div>
+                  <span class="font-cinzel text-xs font-bold text-parchment-200 block">Aztec Caesar Shift</span>
+                  <span class="text-[10px] text-parchment-400 block">Classic Ancient Glyph Rotation</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Passphrase Input -->
+          <div>
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>Secret Pirate Key / Passphrase:</span>
+              <button type="button" onclick="generateRandomKey()" class="text-[10px] text-doubloon-400 hover:underline">
+                🎲 Roll Random Key
+              </button>
+            </label>
+            <div class="relative">
+              <input
+                id="sender-key"
+                type="text"
+                class="w-full bg-abyss-950/90 border border-brass/40 focus:border-doubloon-400 rounded-xl px-3.5 py-2.5 text-sm font-mono text-doubloon-300 outline-none transition shadow-inner"
+                value="blackpearl1720"
+                placeholder="Enter secret cipher passphrase..."
+              />
+            </div>
+          </div>
+
+          <!-- Encrypt Action Button -->
+          <button
+            id="encrypt-btn"
+            onclick="handleEncrypt()"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blood-800 via-blood-700 to-blood-900 hover:brightness-110 border border-blood-500/50 text-parchment-100 font-cinzel font-bold text-xs md:text-sm tracking-wider uppercase shadow-xl transition flex items-center justify-center gap-2 transform active:scale-[0.99]"
+          >
+            <span>🩸 Cast Blood Wax Seal (Encrypt)</span>
+          </button>
+
+          <!-- Encrypted Ciphertext Result Box -->
+          <div id="sender-result-box" class="space-y-2 pt-2">
+            <div class="flex items-center justify-between font-cinzel text-xs text-doubloon-400">
+              <span class="flex items-center gap-1.5 font-bold">
+                <span class="w-2 h-2 rounded-full bg-blood-500 animate-pulse"></span>
+                Sealed Ciphertext (Cursed Token):
+              </span>
+              <button onclick="copyCiphertext()" class="text-[10px] text-parchment-400 hover:text-doubloon-300 transition">
+                📋 Copy Token
+              </button>
+            </div>
+            <textarea
+              id="sender-ciphertext"
+              rows="3"
+              readonly
+              class="w-full bg-abyss-900/90 border border-brass/30 rounded-xl p-2.5 text-xs font-mono text-doubloon-300/90 outline-none break-all select-all shadow-inner"
+              placeholder="Encrypted cursed token will appear here..."
+            ></textarea>
+
+            <!-- Send to Receiver button -->
+            <button
+              id="send-to-receiver-btn"
+              onclick="transferToReceiver()"
+              class="w-full py-2.5 rounded-xl bg-abyss-900 hover:bg-abyss-800 border border-doubloon-400/40 text-doubloon-300 font-cinzel text-xs font-bold transition flex items-center justify-center gap-2 shadow-md hover:border-doubloon-400"
+            >
+              <span>🍾 Cast Message in Bottle to Receiver Pirate ➔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= RECEIVER PIRATE (QUARTERMASTER) ================= -->
+      <div class="parchment-box rounded-3xl border border-brass/50 p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[640px]">
+        <!-- Top header decoration -->
+        <div class="flex items-center justify-between border-b border-brass/20 pb-4 mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-abyss-900 border border-kraken-400/50 flex items-center justify-center text-2xl shadow-inner">
+              🧭
+            </div>
+            <div>
+              <span class="font-cinzel text-[10px] text-kraken-400 font-bold uppercase tracking-widest block">
+                Persona II • The Receiver
+              </span>
+              <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
+                Quartermaster's Decryption Desk
+              </h3>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-kraken-500/10 border border-kraken-400/40 text-[10px] font-cinzel text-kraken-300">
+            Decryptor Desk
+          </span>
+        </div>
+
+        <div class="space-y-4 flex-1">
+          <!-- Sealed Ciphertext Input -->
+          <div>
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>Sealed Ciphertext Missive:</span>
+              <button type="button" onclick="pasteClipboardToReceiver()" class="text-[10px] text-doubloon-400 hover:underline">
+                Paste From Clipboard
+              </button>
+            </label>
+            <textarea
+              id="receiver-ciphertext"
+              rows="4"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-kraken-400 rounded-xl p-3 text-xs font-mono text-doubloon-300/90 placeholder-parchment-500/50 outline-none transition resize-none shadow-inner"
+              placeholder="Paste the cursed ciphertext (PIRATE_AES:... or PIRATE_CAESAR:...) here..."
+            ></textarea>
+          </div>
+
+          <!-- Passphrase Input -->
+          <div>
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5">
+              Secret Passphrase to Break Seal:
+            </label>
+            <input
+              id="receiver-key"
+              type="text"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-kraken-400 rounded-xl px-3.5 py-2.5 text-sm font-mono text-kraken-300 outline-none transition shadow-inner"
+              placeholder="Enter matching pirate passphrase..."
+            />
+          </div>
+
+          <!-- Decrypt Action Button -->
+          <button
+            id="decrypt-btn"
+            onclick="handleDecrypt()"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-kraken-500 via-teal-600 to-kraken-500 hover:brightness-110 text-abyss-950 font-cinzel font-bold text-xs md:text-sm tracking-wider uppercase shadow-xl transition flex items-center justify-center gap-2 transform active:scale-[0.99]"
+          >
+            <span>⚔️ Break Seal & Decrypt Missive</span>
+          </button>
+
+          <!-- Error Alert Banner -->
+          <div id="decrypt-error" class="hidden p-3 rounded-xl bg-blood-900/30 border border-blood-600/50 text-xs font-parchment text-blood-300 flex items-start gap-2">
+            <span class="text-base">💀</span>
+            <span id="decrypt-error-text">Arrr! Cursed key! The wax seal rejects your passphrase or the missive was tampered with.</span>
+          </div>
+
+          <!-- Decrypted Plaintext Reveal Card -->
+          <div id="receiver-result-box" class="hidden space-y-2 pt-2 transition-all duration-300">
+            <div class="flex items-center justify-between font-cinzel text-xs text-kraken-300">
+              <span class="flex items-center gap-1.5 font-bold">
+                <span class="w-2 h-2 rounded-full bg-kraken-400 animate-pulse"></span>
+                Decrypted Captain's Orders (<span id="result-algo-tag">AES-256</span>):
+              </span>
+              <span class="text-[10px] text-doubloon-400 font-bold">✦ Authenticated ✦</span>
+            </div>
+            <div class="parchment-card p-4 rounded-xl border border-doubloon-400/40 bg-abyss-950/95 relative shadow-xl">
+              <p id="receiver-plaintext" class="font-parchment text-base text-parchment-100 leading-relaxed italic drop-shadow"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cryptographic Explainer Card at Bottom -->
+    <div class="mt-12 parchment-card p-6 md:p-8 rounded-2xl border border-brass/30 max-w-4xl mx-auto">
+      <h4 class="font-cinzel text-sm font-bold text-doubloon-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+        <svg class="w-4 h-4 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        The Pirate's Cryptographic Code
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-parchment text-parchment-300 leading-relaxed">
+        <div>
+          <strong class="text-parchment-100 font-cinzel block mb-1">AES-256-GCM (Galois/Counter Mode):</strong>
+          Uses military-grade 256-bit symmetric encryption with a PBKDF2-HMAC-SHA256 salted key derivation (100,000 iterations) and 96-bit random initialization vector (nonce). If any rival pirate alters even a single byte of the ciphertext, the GCM authentication tag rejects it instantly.
+        </div>
+        <div>
+          <strong class="text-parchment-100 font-cinzel block mb-1">Aztec Caesar Shift:</strong>
+          A historic rotation cipher derived from Julius Caesar and ancient nautical shift dials. Shifts letters along the alphabet by the secret key modulo 26, creating an encoded scroll readable only by those who hold the matching degree.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio Synth & Scripts -->
+  <script src="/static/js/soundSynth.js"></script>
+  <script>
+    let activeAlgo = 'aes';
+    let isAudioPlaying = false;
+
+    // Presets
+    const SAMPLES = {
+      1: "The Aztec treasure chest lies 40 fathoms beneath Skull Rock. Meet the Black Pearl under the blood moon.",
+      2: "Warning! The First Mate plans mutiny at dawn. Keep your cutlass sharp and double the watch.",
+      3: "Anchoring at Tortuga Haven: latitude 20° 03' N, longitude 72° 47' W. Bring rum and fresh sail canvas."
+    };
+
+    function setSampleMessage(idx) {
+      document.getElementById('sender-message').value = SAMPLES[idx] || '';
+      if (window.soundSynth) window.soundSynth.playCreak();
+    }
+
+    function onAlgoChange(algo) {
+      activeAlgo = algo;
+    }
+
+    function generateRandomKey() {
+      const pirates = ['blackbeard', 'calicojack', 'annebonny', 'davyjones', 'captainmorgan', 'blackpearl'];
+      const places = ['tortuga', 'nassau', 'shipwreck', 'deadman', 'kraken'];
+      const num = Math.floor(Math.random() * 899 + 100);
+      const p = pirates[Math.floor(Math.random() * pirates.length)];
+      const loc = places[Math.floor(Math.random() * places.length)];
+      document.getElementById('sender-key').value = `${p}_${loc}_${num}`;
+      if (window.soundSynth) window.soundSynth.playCoinClink();
+    }
+
+    // Encrypt Handler
+    async function handleEncrypt() {
+      const message = document.getElementById('sender-message').value.trim();
+      const key = document.getElementById('sender-key').value.trim();
+      const btn = document.getElementById('encrypt-btn');
+
+      if (!message || !key) {
+        alert('Avast! Please provide both a secret missive and a pirate passphrase.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Stamping Cursed Wax Seal...</span>';
+
+      try {
+        const res = await fetch('/api/cipher/encrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, key, algorithm: activeAlgo })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('sender-ciphertext').value = data.ciphertext;
+          if (window.soundSynth) {
+            window.soundSynth.playCannon();
+            setTimeout(() => window.soundSynth.playCoinClink(), 300);
+          }
+
+          // Register in shared fleet transmission store for Attack Simulator
+          if (data.ciphertext && data.ciphertext.startsWith('PIRATE_AES:')) {
+            try {
+              const encoder = new TextEncoder();
+              const hashBuf = await window.crypto.subtle.digest('SHA-256', encoder.encode(data.ciphertext));
+              const shaHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+              const b64 = data.ciphertext.replace('PIRATE_AES:', '');
+              const rawBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+              const salt = rawBytes.slice(0, 16);
+              const iv = rawBytes.slice(16, 28);
+              const cipherAndTag = rawBytes.slice(28);
+              const tag = cipherAndTag.slice(cipherAndTag.length - 16);
+              const cipherOnly = cipherAndTag.slice(0, cipherAndTag.length - 16);
+              const toHex = (arr) => Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+
+              const randId = 'DMC-' + Array.from(window.crypto.getRandomValues(new Uint8Array(3))).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+              const newTrans = {
+                messageId: randId,
+                carrierType: 'shanty',
+                carrierName: 'Sea Shanty Missive',
+                carrierData: `The tides are turning at the dead of night,\nBeneath the moon so pale and bright;\n[DMC_CIPHER_PAYLOAD:${data.ciphertext}]\nWhere buccaneers their treasures keep,\nAnd sirens sing the ocean deep.`,
+                encryptedPayload: data.ciphertext,
+                saltHex: toHex(salt),
+                ivHex: toHex(iv),
+                ciphertextHex: toHex(cipherOnly),
+                tagHex: toHex(tag),
+                sha256: shaHex,
+                passphraseHint: key,
+                coordinates: { lat: 19.0760, lng: 72.8777, location: "Isla de Muerta Cove" },
+                createdTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                timestamp: Date.now(),
+                status: 'READY'
+              };
+              const existing = JSON.parse(localStorage.getItem('dmc_transmissions') || '[]');
+              existing.unshift(newTrans);
+              localStorage.setItem('dmc_transmissions', JSON.stringify(existing.slice(0, 10)));
+            } catch (e) {
+              console.warn('Failed to save transmission:', e);
+            }
+          }
+        } else {
+          alert('Encryption Error: ' + (data.error || 'Failed to encrypt'));
+        }
+      } catch (err) {
+        alert('Failed to reach cipher engine: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🩸 Cast Blood Wax Seal (Encrypt)</span>';
+      }
+    }
+
+    function copyCiphertext() {
+      const text = document.getElementById('sender-ciphertext').value;
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      if (window.soundSynth) window.soundSynth.playCoinClink();
+      alert('Sealed cipher copied to pirate parchment clipboard!');
+    }
+
+    // Bottle message transfer from Sender -> Receiver
+    function transferToReceiver() {
+      const cipher = document.getElementById('sender-ciphertext').value;
+      const key = document.getElementById('sender-key').value;
+
+      if (!cipher) {
+        alert('Avast! Encrypt a message first before sending the bottle.');
+        return;
+      }
+
+      document.getElementById('receiver-ciphertext').value = cipher;
+      document.getElementById('receiver-key').value = key;
+
+      // Bottle launch sound + confetti
+      if (window.soundSynth) {
+        window.soundSynth.playCreak();
+        setTimeout(() => window.soundSynth.playCoinClink(), 200);
+      }
+
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { x: 0.75, y: 0.6 },
+        colors: ['#2dd4bf', '#0d9488', '#ffd700'],
+      });
+
+      // Smooth scroll to receiver on mobile
+      if (window.innerWidth < 1024) {
+        document.getElementById('receiver-ciphertext').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    async function pasteClipboardToReceiver() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('receiver-ciphertext').value = text;
+          if (window.soundSynth) window.soundSynth.playCoinClink();
+        }
+      } catch {
+        alert('Please paste directly into the box.');
+      }
+    }
+
+    // Decrypt Handler
+    async function handleDecrypt() {
+      const ciphertext = document.getElementById('receiver-ciphertext').value.trim();
+      const key = document.getElementById('receiver-key').value.trim();
+      const btn = document.getElementById('decrypt-btn');
+      const errBox = document.getElementById('decrypt-error');
+      const errText = document.getElementById('decrypt-error-text');
+      const resultBox = document.getElementById('receiver-result-box');
+      const resultPlaintext = document.getElementById('receiver-plaintext');
+      const algoTag = document.getElementById('result-algo-tag');
+
+      if (!ciphertext || !key) {
+        alert('Avast! Please provide both the sealed ciphertext and the passphrase.');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      resultBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Breaking Wax Seal...</span>';
+
+      try {
+        const res = await fetch('/api/cipher/decrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ciphertext, key })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          resultPlaintext.textContent = `"${data.plaintext}"`;
+          algoTag.textContent = data.algorithm;
+          resultBox.classList.remove('hidden');
+
+          if (window.soundSynth) window.soundSynth.playCoinClink();
+
+          // Golden celebration burst
+          confetti({
+            particleCount: 90,
+            spread: 80,
+            origin: { x: 0.75, y: 0.65 },
+            colors: ['#ffd700', '#f59e0b', '#2dd4bf', '#ffffff'],
+            scalar: 1.2
+          });
+        } else {
+          errText.textContent = data.error || 'Decryption failed.';
+          errBox.classList.remove('hidden');
+          if (window.soundSynth) window.soundSynth.playCannon();
+        }
+      } catch (err) {
+        errText.textContent = 'Engine communication failed: ' + err.message;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚔️ Break Seal & Decrypt Missive</span>';
+      }
+    }
+
+    // Audio Toggle
+    const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioStatus = document.getElementById('audio-status-text');
+    if (audioBtn) {
+      audioBtn.addEventListener('click', () => {
+        if (!window.soundSynth) return;
+        if (isAudioPlaying) {
+          window.soundSynth.stop();
+          isAudioPlaying = false;
+          audioStatus.textContent = 'Audio: OFF';
+          audioBtn.classList.remove('border-doubloon-400');
+        } else {
+          window.soundSynth.startAmbient();
+          isAudioPlaying = true;
+          audioStatus.textContent = 'Audio: ON';
+          audioBtn.classList.add('border-doubloon-400');
+        }
+      });
+    }
+
+    // Auto encrypt initial sample on load for instant interactive demo
+    window.addEventListener('DOMContentLoaded', () => {
+      handleEncrypt();
+    });
+  </script>
+</body>
+</html>

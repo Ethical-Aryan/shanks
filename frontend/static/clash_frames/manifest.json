@@ -1,0 +1,10 @@
+{
+  "videoName": "piratesclashing.mp4",
+  "totalFrames": 240,
+  "width": 1280,
+  "height": 720,
+  "aspectRatio": 1.7778,
+  "duration": 10.0,
+  "pattern": "/static/clash_frames/frame_{index}.jpg",
+  "zeroPadding": 4
+}

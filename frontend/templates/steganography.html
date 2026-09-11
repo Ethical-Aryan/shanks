@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#02060d] text-[#ebdcb9]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PIRATE STEGANOGRAPHY | Invisible Ink in Sea Charts</title>
+  <meta name="description" content="Conceal secret pirate missives and treasure coordinates invisibly within image pixels using LSB steganography and AES-256 encryption." />
+
+  <!-- Google Fonts for Pirate Atmosphere -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            abyss: {
+              950: '#02060d',
+              900: '#060d17',
+              800: '#0d1a2d',
+              700: '#162b49',
+            },
+            parchment: {
+              100: '#fdfbf7',
+              200: '#f6f0df',
+              300: '#ebdcb9',
+              400: '#dec28f',
+              500: '#cca564',
+            },
+            doubloon: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            blood: {
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+            },
+            kraken: {
+              500: '#0d9488',
+              400: '#14b8a6',
+              300: '#2dd4bf',
+            },
+            brass: '#cca564',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Confetti library for treasure reveal -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body class="bg-abyss-950 text-parchment-200 min-h-screen relative overflow-x-hidden selection:bg-doubloon-500/30 selection:text-doubloon-300">
+
+  <!-- Background oceanic gradient -->
+  <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-abyss-900/60 via-abyss-950 to-[#010409] -z-10"></div>
+
+  <!-- Header Bar -->
+  <header class="w-full border-b border-brass/20 bg-abyss-950/85 backdrop-blur-md px-3 sm:px-6 md:px-12 py-3 md:py-4 flex flex-wrap items-center justify-between gap-2.5 sticky top-0 z-40">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a href="/" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-abyss-900 border border-brass/40 flex items-center justify-center hover:border-doubloon-400 transition shrink-0" title="Return to Voyage">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </a>
+      <div>
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <h1 class="font-pirate text-xl sm:text-2xl md:text-3xl text-parchment-200 tracking-wider">
+            THE SHADOW CARTOGRAPHER
+          </h1>
+          <span class="px-2 py-0.5 rounded-full bg-kraken-500/10 border border-kraken-400/50 text-[9px] sm:text-[10px] font-cinzel text-kraken-300 font-bold uppercase">
+            LSB Steganography
+          </span>
+        </div>
+        <p class="font-cinzel text-[9px] sm:text-[10px] md:text-xs text-doubloon-400/80 uppercase tracking-widest hidden sm:block">
+          Inscribe Secret Missives Invisibly Into Sea Charts & Images
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1.5 sm:gap-3 flex-wrap">
+      <!-- Audio toggle -->
+      <button id="audio-toggle-btn" class="flex items-center gap-2 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/40 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-parchment-200 shadow-md transition hover:border-doubloon-400">
+        <svg class="w-3.5 h-3.5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="audio-status-text" class="text-[11px] text-parchment-300">Audio: OFF</span>
+      </button>
+
+      <a href="/encrypt" class="flex items-center gap-2 bg-abyss-900 hover:bg-abyss-800 border border-blood-500/40 text-blood-300 font-cinzel text-xs px-3.5 py-1.5 rounded-full shadow-md transition">
+        <span>🩸 Cipher Room (AES)</span>
+      </a>
+
+      <!-- Attack Simulator Link -->
+      <a href="/attack-simulator" class="flex items-center gap-2 bg-gradient-to-r from-blood-700/80 to-red-900/80 hover:brightness-110 border border-blood-500/60 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-white shadow-md transition">
+        <span>⚔️ Attack Simulator</span>
+      </a>
+
+      <a href="/" class="flex items-center gap-2 bg-doubloon-500 hover:bg-doubloon-400 text-abyss-950 font-cinzel font-bold px-4 py-1.5 rounded-full text-xs shadow-lg transition">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+        <span>Back to Voyage</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Intro Banner -->
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <h2 class="font-pirate text-4xl sm:text-5xl md:text-6xl gold-gradient-text tracking-wide mb-3">
+        Invisible Ink of the High Seas
+      </h2>
+      <p class="font-parchment italic text-parchment-300 text-base md:text-lg leading-relaxed">
+        "Hide your treasure coordinates directly inside the colors of a sea chart. To the King's admirals, it looks like a common map; to your crew, it holds the key to fortune."
+      </p>
+    </div>
+
+    <!-- Dual Column: Sender (Left) vs Receiver (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+      <!-- ================= SENDER: EMBED INVISIBLE INK ================= -->
+      <div class="parchment-box rounded-3xl border border-brass/50 p-6 md:p-8 shadow-2xl relative flex flex-col justify-between min-h-[660px]">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center justify-between border-b border-brass/20 pb-4 mb-5">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-abyss-900 border border-doubloon-400/50 flex items-center justify-center text-2xl shadow-inner">
+                🗺️
+              </div>
+              <div>
+                <span class="font-cinzel text-[10px] text-doubloon-400 font-bold uppercase tracking-widest block">
+                  Persona I • The Sender
+                </span>
+                <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
+                  Embed Secret in Image
+                </h3>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-doubloon-500/10 border border-doubloon-400/40 text-[10px] font-cinzel text-doubloon-300">
+              Stego Inscriber
+            </span>
+          </div>
+
+          <!-- Step 1: Upload Image -->
+          <div class="mb-4">
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>1. Select Carrier Image (Map / Chart / Painting):</span>
+              <button type="button" onclick="useDefaultParchmentMap()" class="text-[10px] text-doubloon-400 hover:underline">
+                Use Parchment Canvas
+              </button>
+            </label>
+            <div
+              id="sender-dropzone"
+              onclick="document.getElementById('sender-file-input').click()"
+              class="border-2 border-dashed border-brass/40 hover:border-doubloon-400/70 rounded-2xl p-4 text-center cursor-pointer bg-abyss-900/60 transition group"
+            >
+              <input
+                type="file"
+                id="sender-file-input"
+                accept="image/png,image/jpeg,image/webp"
+                class="hidden"
+                onchange="handleSenderFile(event)"
+              />
+              <div id="sender-upload-prompt">
+                <svg class="w-8 h-8 text-doubloon-400 mx-auto mb-1 group-hover:scale-110 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p class="font-cinzel text-xs text-parchment-200">
+                  Drop sea chart image here or <span class="text-doubloon-400 underline">browse</span>
+                </p>
+                <p class="text-[10px] text-parchment-400/70 mt-0.5">Supports PNG, JPG, WebP</p>
+              </div>
+
+              <!-- Preview thumbnail -->
+              <div id="sender-img-preview-box" class="hidden flex items-center justify-center gap-3">
+                <img id="sender-preview-img" class="h-20 w-auto rounded-lg border border-brass/40 object-cover shadow" />
+                <div class="text-left font-cinzel text-xs">
+                  <span id="sender-img-name" class="font-bold text-doubloon-300 block truncate max-w-[200px]">map.png</span>
+                  <span id="sender-img-dimensions" class="text-[10px] text-parchment-400 block">800x600 px</span>
+                  <span class="text-[10px] text-kraken-400 block">✓ Ready for ink</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Secret Message -->
+          <div class="mb-4">
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>2. Secret Message to Conceal:</span>
+              <span class="text-[10px] text-parchment-400/80 font-normal">Preset chips:</span>
+            </label>
+            <div class="flex flex-wrap gap-1.5 mb-2">
+              <button type="button" onclick="setStegoSample(1)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                🧭 Skeleton Bay
+              </button>
+              <button type="button" onclick="setStegoSample(2)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                💰 Cursed Aztec Cache
+              </button>
+              <button type="button" onclick="setStegoSample(3)" class="px-2 py-0.5 rounded-md bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] font-cinzel text-parchment-300 hover:text-doubloon-300 transition">
+                ⚔️ Midnight Attack Order
+              </button>
+            </div>
+            <textarea
+              id="stego-secret-message"
+              rows="3"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-doubloon-400 rounded-xl p-3 text-xs font-parchment text-parchment-100 placeholder-parchment-500/50 outline-none transition resize-none shadow-inner"
+              placeholder="Inscribe the secret coordinates to hide invisibly inside the image pixels..."
+            >The iron vault is hidden behind the waterfall at Dead Man's Creek. 200 gold bars inside.</textarea>
+          </div>
+
+          <!-- Step 3: Optional Passphrase -->
+          <div class="mb-5">
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1 flex items-center justify-between">
+              <span>3. Secret Passphrase (Optional AES-256 Layer):</span>
+              <span class="text-[10px] text-doubloon-400/80">Double-Lock</span>
+            </label>
+            <input
+              id="stego-sender-passphrase"
+              type="text"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-doubloon-400 rounded-xl px-3.5 py-2 text-xs font-mono text-doubloon-300 outline-none transition shadow-inner"
+              placeholder="Leave empty for raw steganography, or enter a key for AES encryption..."
+              value="tortuga1720"
+            />
+          </div>
+
+          <!-- Action Button -->
+          <button
+            id="encode-btn"
+            onclick="handleStegoEncode()"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-doubloon-600 via-doubloon-500 to-amber-400 hover:brightness-110 text-abyss-950 font-cinzel font-bold text-xs md:text-sm tracking-wider uppercase shadow-xl transition flex items-center justify-center gap-2 transform active:scale-[0.99]"
+          >
+            <span>📜 Inscribe Invisible Ink (Embed Secret)</span>
+          </button>
+        </div>
+
+        <!-- Encoded Result Box -->
+        <div id="stego-result-box" class="hidden mt-5 pt-4 border-t border-brass/20 space-y-3">
+          <div class="flex items-center justify-between font-cinzel text-xs text-doubloon-400">
+            <span class="flex items-center gap-1.5 font-bold">
+              <span class="w-2 h-2 rounded-full bg-kraken-400 animate-pulse"></span>
+              Stego Image Ready (Pixel-Perfect):
+            </span>
+            <span class="text-[10px] text-parchment-400">Lossless PNG</span>
+          </div>
+
+          <!-- Encoded Image Preview -->
+          <div class="flex items-center justify-center bg-abyss-950/80 rounded-xl p-3 border border-brass/30">
+            <img id="stego-result-img" class="max-h-36 max-w-full rounded-lg border border-brass/40 shadow-lg object-contain" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <a
+              id="download-stego-btn"
+              download="cursed_pirate_map_stego.png"
+              class="py-2.5 rounded-xl bg-abyss-900 hover:bg-abyss-800 border border-brass/40 text-parchment-200 font-cinzel text-xs font-bold transition flex items-center justify-center gap-1.5 shadow"
+            >
+              <svg class="w-3.5 h-3.5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download Map (PNG)</span>
+            </a>
+
+            <button
+              onclick="transferStegoToReceiver()"
+              class="py-2.5 rounded-xl bg-kraken-500 hover:bg-kraken-400 text-abyss-950 font-cinzel text-xs font-bold transition flex items-center justify-center gap-1.5 shadow"
+            >
+              <span>Send to Receiver ➔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= RECEIVER: DECODE INVISIBLE INK ================= -->
+      <div class="parchment-box rounded-3xl border border-brass/50 p-6 md:p-8 shadow-2xl relative flex flex-col justify-between min-h-[660px]">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center justify-between border-b border-brass/20 pb-4 mb-5">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-abyss-900 border border-kraken-400/50 flex items-center justify-center text-2xl shadow-inner">
+                🔍
+              </div>
+              <div>
+                <span class="font-cinzel text-[10px] text-kraken-400 font-bold uppercase tracking-widest block">
+                  Persona II • The Receiver
+                </span>
+                <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
+                  Inspect & Decode Image
+                </h3>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-kraken-500/10 border border-kraken-400/40 text-[10px] font-cinzel text-kraken-300">
+              Stego Reader
+            </span>
+          </div>
+
+          <!-- Step 1: Upload Stego Image -->
+          <div class="mb-4">
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1.5 flex items-center justify-between">
+              <span>1. Upload Stego Image to Inspect:</span>
+              <span class="text-[10px] text-parchment-400/80 font-normal">Drag & drop PNG</span>
+            </label>
+            <div
+              id="receiver-dropzone"
+              onclick="document.getElementById('receiver-file-input').click()"
+              class="border-2 border-dashed border-brass/40 hover:border-kraken-400/70 rounded-2xl p-4 text-center cursor-pointer bg-abyss-900/60 transition group"
+            >
+              <input
+                type="file"
+                id="receiver-file-input"
+                accept="image/png,image/jpeg,image/webp"
+                class="hidden"
+                onchange="handleReceiverFile(event)"
+              />
+              <div id="receiver-upload-prompt">
+                <svg class="w-8 h-8 text-kraken-400 mx-auto mb-1 group-hover:scale-110 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <p class="font-cinzel text-xs text-parchment-200">
+                  Drop suspected stego image here or <span class="text-kraken-400 underline">browse</span>
+                </p>
+                <p class="text-[10px] text-parchment-400/70 mt-0.5">Upload lossless PNG for exact pixel extraction</p>
+              </div>
+
+              <!-- Preview thumbnail -->
+              <div id="receiver-img-preview-box" class="hidden flex items-center justify-center gap-3">
+                <img id="receiver-preview-img" class="h-20 w-auto rounded-lg border border-brass/40 object-cover shadow" />
+                <div class="text-left font-cinzel text-xs">
+                  <span id="receiver-img-name" class="font-bold text-kraken-300 block truncate max-w-[200px]">stego.png</span>
+                  <span id="receiver-img-dimensions" class="text-[10px] text-parchment-400 block">Loaded</span>
+                  <span class="text-[10px] text-doubloon-400 block">Ready to scan LSB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Passphrase -->
+          <div class="mb-5">
+            <label class="block font-cinzel text-xs text-parchment-300 font-semibold mb-1 flex items-center justify-between">
+              <span>2. Secret Passphrase (If AES-Encrypted):</span>
+              <span class="text-[10px] text-parchment-400">Matching Key</span>
+            </label>
+            <input
+              id="stego-receiver-passphrase"
+              type="text"
+              class="w-full bg-abyss-950/90 border border-brass/40 focus:border-kraken-400 rounded-xl px-3.5 py-2 text-xs font-mono text-kraken-300 outline-none transition shadow-inner"
+              placeholder="Enter matching pirate passphrase..."
+              value="tortuga1720"
+            />
+          </div>
+
+          <!-- Decode Action Button -->
+          <button
+            id="decode-btn"
+            onclick="handleStegoDecode()"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-kraken-500 via-teal-600 to-kraken-500 hover:brightness-110 text-abyss-950 font-cinzel font-bold text-xs md:text-sm tracking-wider uppercase shadow-xl transition flex items-center justify-center gap-2 transform active:scale-[0.99]"
+          >
+            <span>🔍 Reveal Invisible Ink (Extract Secret)</span>
+          </button>
+
+          <!-- Decode Error Alert -->
+          <div id="decode-error" class="hidden mt-4 p-3 rounded-xl bg-blood-900/30 border border-blood-600/50 text-xs font-parchment text-blood-300 flex items-start gap-2">
+            <span class="text-base">💀</span>
+            <span id="decode-error-text">No secret message found.</span>
+          </div>
+
+          <!-- Decoded Secret Reveal Card -->
+          <div id="decode-result-box" class="hidden mt-5 space-y-2 pt-2 transition-all duration-300">
+            <div class="flex items-center justify-between font-cinzel text-xs text-kraken-300">
+              <span class="flex items-center gap-1.5 font-bold">
+                <span class="w-2 h-2 rounded-full bg-kraken-400 animate-pulse"></span>
+                Revealed Secret Coordinates:
+              </span>
+              <span id="decode-badge" class="text-[10px] text-doubloon-400 font-bold">✦ Authenticated ✦</span>
+            </div>
+            <div class="parchment-card p-5 rounded-xl border border-doubloon-400/50 bg-abyss-950/95 relative shadow-2xl">
+              <div class="text-[10px] font-cinzel text-parchment-400 uppercase tracking-widest mb-1">
+                Extracted from Pixel LSB Channels:
+              </div>
+              <p id="decoded-message-text" class="font-parchment text-base text-parchment-100 leading-relaxed italic drop-shadow"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steganography Explainer -->
+    <div class="mt-12 parchment-card p-6 md:p-8 rounded-2xl border border-brass/30 max-w-4xl mx-auto">
+      <h4 class="font-cinzel text-sm font-bold text-doubloon-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+        <svg class="w-4 h-4 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4"/>
+          <path d="M12 8h.01"/>
+        </svg>
+        How Pirate LSB Steganography Works
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-parchment text-parchment-300 leading-relaxed">
+        <div>
+          <strong class="text-parchment-100 font-cinzel block mb-1">Least Significant Bit (LSB) Embedding:</strong>
+          Every pixel on a screen consists of Red, Green, and Blue color values (0-255). We alter only the least significant bit (e.g., changing 184 to 185). The difference is completely invisible to human eyes, yet conceals thousands of binary characters.
+        </div>
+        <div>
+          <strong class="text-parchment-100 font-cinzel block mb-1">Lossless PNG Preservation:</strong>
+          Unlike JPEG which compresses and destroys pixel bits, PNG preserves every single bit losslessly. Combined with AES-256, even if an enemy pirate suspects steganography, they cannot read the message without the secret key.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio Synth & Scripts -->
+  <script src="/static/js/soundSynth.js"></script>
+  <script>
+    let senderFileBlob = null;
+    let receiverFileBlob = null;
+    let lastEncodedDataUrl = null;
+    let isAudioPlaying = false;
+
+    const SAMPLES = {
+      1: "The iron vault is hidden behind the waterfall at Dead Man's Creek. 200 gold bars inside.",
+      2: "Cursed Aztec gold buried 40 paces North of the Skeleton Palm tree. Beware the rising tide.",
+      3: "Order to all captains: Assemble at Tortuga harbor under the new moon. The Royal Navy approaches."
+    };
+
+    function setStegoSample(idx) {
+      document.getElementById('stego-secret-message').value = SAMPLES[idx] || '';
+      if (window.soundSynth) window.soundSynth.playCreak();
+    }
+
+    // Generate a default artistic parchment canvas if user has no file
+    function useDefaultParchmentMap() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 480;
+      const ctx = canvas.getContext('2d');
+
+      // Parchment gradient
+      const grad = ctx.createRadialGradient(320, 240, 50, 320, 240, 360);
+      grad.addColorStop(0, '#2b1e10');
+      grad.addColorStop(0.6, '#1a2333');
+      grad.addColorStop(1, '#0b111a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 640, 480);
+
+      // Add compass & nautical decorative lines
+      ctx.strokeStyle = '#c59f42';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(320, 240, 100, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#cca564';
+      ctx.font = 'bold 28px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⚓ ISLA DE MUERTA ⚓', 320, 248);
+
+      canvas.toBlob((blob) => {
+        senderFileBlob = blob;
+        const url = URL.createObjectURL(blob);
+        document.getElementById('sender-preview-img').src = url;
+        document.getElementById('sender-img-name').textContent = 'parchment_map.png';
+        document.getElementById('sender-img-dimensions').textContent = '640x480 px';
+        document.getElementById('sender-upload-prompt').classList.add('hidden');
+        document.getElementById('sender-img-preview-box').classList.remove('hidden');
+        if (window.soundSynth) window.soundSynth.playCoinClink();
+      }, 'image/png');
+    }
+
+    function handleSenderFile(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      senderFileBlob = file;
+      const url = URL.createObjectURL(file);
+
+      const img = new Image();
+      img.onload = () => {
+        document.getElementById('sender-preview-img').src = url;
+        document.getElementById('sender-img-name').textContent = file.name;
+        document.getElementById('sender-img-dimensions').textContent = `${img.naturalWidth}x${img.naturalHeight} px`;
+        document.getElementById('sender-upload-prompt').classList.add('hidden');
+        document.getElementById('sender-img-preview-box').classList.remove('hidden');
+        if (window.soundSynth) window.soundSynth.playCoinClink();
+      };
+      img.src = url;
+    }
+
+    function handleReceiverFile(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      receiverFileBlob = file;
+      const url = URL.createObjectURL(file);
+
+      const img = new Image();
+      img.onload = () => {
+        document.getElementById('receiver-preview-img').src = url;
+        document.getElementById('receiver-img-name').textContent = file.name;
+        document.getElementById('receiver-img-dimensions').textContent = `${img.naturalWidth}x${img.naturalHeight} px`;
+        document.getElementById('receiver-upload-prompt').classList.add('hidden');
+        document.getElementById('receiver-img-preview-box').classList.remove('hidden');
+        if (window.soundSynth) window.soundSynth.playCoinClink();
+      };
+      img.src = url;
+    }
+
+    // Encode
+    async function handleStegoEncode() {
+      const message = document.getElementById('stego-secret-message').value.trim();
+      const passphrase = document.getElementById('stego-sender-passphrase').value.trim();
+      const btn = document.getElementById('encode-btn');
+
+      if (!message) {
+        alert('Avast! Please inscribe a secret message.');
+        return;
+      }
+
+      if (!senderFileBlob) {
+        // Auto generate default parchment canvas if no file selected
+        useDefaultParchmentMap();
+        await new Promise(r => setTimeout(r, 200));
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Inscribing Invisible Ink...</span>';
+
+      const formData = new FormData();
+      formData.append('image', senderFileBlob, 'carrier.png');
+      formData.append('message', message);
+      formData.append('passphrase', passphrase);
+
+      try {
+        const res = await fetch('/api/stego/encode', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          lastEncodedDataUrl = data.imageUrl;
+          document.getElementById('stego-result-img').src = data.imageUrl;
+          document.getElementById('download-stego-btn').href = data.imageUrl;
+          document.getElementById('stego-result-box').classList.remove('hidden');
+
+          if (window.soundSynth) {
+            window.soundSynth.playCannon();
+            setTimeout(() => window.soundSynth.playCoinClink(), 300);
+          }
+
+          // Register in shared fleet transmission store for Attack Simulator
+          try {
+            const encoder = new TextEncoder();
+            const hashBuf = await window.crypto.subtle.digest('SHA-256', encoder.encode(message));
+            const shaHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+            const randId = 'DMC-' + Array.from(window.crypto.getRandomValues(new Uint8Array(3))).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+            const newTrans = {
+              messageId: randId,
+              carrierType: 'image',
+              carrierName: 'Steganographic Sea Chart',
+              carrierData: `Image Canvas (${data.width}x${data.height} px) with secret embedded in LSB bits`,
+              encryptedPayload: data.wasEncrypted ? 'PIRATE_AES:STEGO_EMBEDDED_PAYLOAD' : message,
+              saltHex: '00112233445566778899aabbccddeeff',
+              ivHex: '112233445566778899aabbcc',
+              ciphertextHex: shaHex.slice(0, 32),
+              tagHex: shaHex.slice(32, 64),
+              sha256: shaHex,
+              passphraseHint: passphrase || 'None (Plaintext LSB)',
+              coordinates: { lat: 19.0760, lng: 72.8777, location: "Isla de Muerta Cove" },
+              createdTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              timestamp: Date.now(),
+              status: 'READY'
+            };
+            const existing = JSON.parse(localStorage.getItem('dmc_transmissions') || '[]');
+            existing.unshift(newTrans);
+            localStorage.setItem('dmc_transmissions', JSON.stringify(existing.slice(0, 10)));
+          } catch (e) {
+            console.warn('Failed to register stego transmission:', e);
+          }
+        } else {
+          alert('Steganography Error: ' + (data.error || 'Failed to embed'));
+        }
+      } catch (err) {
+        alert('Engine communication failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>📜 Inscribe Invisible Ink (Embed Secret)</span>';
+      }
+    }
+
+    // Transfer Stego Image from Sender -> Receiver
+    async function transferStegoToReceiver() {
+      if (!lastEncodedDataUrl) {
+        alert('Inscribe an image first!');
+        return;
+      }
+
+      const res = await fetch(lastEncodedDataUrl);
+      const blob = await res.blob();
+      receiverFileBlob = blob;
+
+      document.getElementById('receiver-preview-img').src = lastEncodedDataUrl;
+      document.getElementById('receiver-img-name').textContent = 'cursed_pirate_map_stego.png';
+      document.getElementById('receiver-img-dimensions').textContent = 'Ready for scan';
+      document.getElementById('receiver-upload-prompt').classList.add('hidden');
+      document.getElementById('receiver-img-preview-box').classList.remove('hidden');
+
+      // Copy passphrase
+      document.getElementById('stego-receiver-passphrase').value = document.getElementById('stego-sender-passphrase').value;
+
+      if (window.soundSynth) {
+        window.soundSynth.playCreak();
+        setTimeout(() => window.soundSynth.playCoinClink(), 200);
+      }
+
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { x: 0.75, y: 0.6 },
+        colors: ['#2dd4bf', '#0d9488', '#ffd700'],
+      });
+
+      if (window.innerWidth < 1024) {
+        document.getElementById('receiver-dropzone').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Decode
+    async function handleStegoDecode() {
+      if (!receiverFileBlob) {
+        alert('Avast! Please upload or transfer a stego image to inspect.');
+        return;
+      }
+
+      const passphrase = document.getElementById('stego-receiver-passphrase').value.trim();
+      const btn = document.getElementById('decode-btn');
+      const errBox = document.getElementById('decode-error');
+      const errText = document.getElementById('decode-error-text');
+      const resultBox = document.getElementById('decode-result-box');
+      const resultText = document.getElementById('decoded-message-text');
+      const badge = document.getElementById('decode-badge');
+
+      errBox.classList.add('hidden');
+      resultBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Inspecting Pixel LSB Channels...</span>';
+
+      const formData = new FormData();
+      formData.append('image', receiverFileBlob, 'stego_sample.png');
+      formData.append('passphrase', passphrase);
+
+      try {
+        const res = await fetch('/api/stego/decode', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          resultText.textContent = `"${data.message}"`;
+          badge.textContent = data.wasEncrypted ? '✦ AES-256 Authenticated ✦' : '✦ LSB Raw Ink ✦';
+          resultBox.classList.remove('hidden');
+
+          if (window.soundSynth) window.soundSynth.playCoinClink();
+
+          confetti({
+            particleCount: 90,
+            spread: 80,
+            origin: { x: 0.75, y: 0.65 },
+            colors: ['#ffd700', '#f59e0b', '#2dd4bf', '#ffffff'],
+            scalar: 1.2
+          });
+        } else {
+          errText.textContent = data.error || 'No hidden message found.';
+          errBox.classList.remove('hidden');
+          if (window.soundSynth) window.soundSynth.playCannon();
+        }
+      } catch (err) {
+        errText.textContent = 'Engine communication failed: ' + err.message;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔍 Reveal Invisible Ink (Extract Secret)</span>';
+      }
+    }
+
+    // Audio Toggle
+    const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioStatus = document.getElementById('audio-status-text');
+    if (audioBtn) {
+      audioBtn.addEventListener('click', () => {
+        if (!window.soundSynth) return;
+        if (isAudioPlaying) {
+          window.soundSynth.stop();
+          isAudioPlaying = false;
+          audioStatus.textContent = 'Audio: OFF';
+          audioBtn.classList.remove('border-doubloon-400');
+        } else {
+          window.soundSynth.startAmbient();
+          isAudioPlaying = true;
+          audioStatus.textContent = 'Audio: ON';
+          audioBtn.classList.add('border-doubloon-400');
+        }
+      });
+    }
+
+    // Auto-setup initial map
+    window.addEventListener('DOMContentLoaded', () => {
+      useDefaultParchmentMap();
+    });
+  </script>
+</body>
+</html>

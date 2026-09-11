@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#02060d] text-[#ebdcb9]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEAD MAN'S CIPHER | Man-In-The-Middle Interception Console</title>
+  <meta name="description" content="Simulate an adversary intercepting and modifying the sender's secret message in transit with smooth 60fps video frame scroll scrubbing on PC and tablet." />
+
+  <!-- Google Fonts for Pirate Atmosphere -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            abyss: {
+              950: '#02060d',
+              900: '#060d17',
+              800: '#0d1a2d',
+              700: '#162b49',
+            },
+            parchment: {
+              100: '#fdfbf7',
+              200: '#f6f0df',
+              300: '#ebdcb9',
+              400: '#dec28f',
+              500: '#cca564',
+            },
+            doubloon: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            blood: {
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            },
+            kraken: {
+              500: '#0d9488',
+              400: '#14b8a6',
+              300: '#2dd4bf',
+            },
+            brass: '#cca564',
+          },
+          fontFamily: {
+            pirate: ['"Pirata One"', 'cursive'],
+            cinzel: ['"Cinzel"', 'serif'],
+            'cinzel-dec': ['"Cinzel Decorative"', 'serif'],
+            parchment: ['"IM Fell English"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            sans: ['"Inter"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lenis Smooth Scrolling Library -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <style>
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .blood-gradient-text {
+      background: linear-gradient(135deg, #fca5a5 0%, #ef4444 50%, #991b1b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Glassmorphic parchment panels allowing video clash frames to shine through on PC/Tablet */
+    .parchment-box {
+      background: rgba(6, 13, 23, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(204, 165, 100, 0.38);
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.85);
+    }
+    @media (max-width: 767px) {
+      .parchment-box {
+        background: rgba(6, 13, 23, 0.94);
+        backdrop-filter: blur(8px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#02060d] text-[#ebdcb9] min-h-screen md:min-h-[220vh] relative selection:bg-blood-500/30 selection:text-blood-300 font-sans overflow-x-hidden">
+
+  <!-- ================= FIXED SCROLLYTELLING CANVAS (PIRATES CLASHING) ================= -->
+  <!-- STRICT RULE: HIDDEN ON MOBILE (< 768px), VISIBLE & SMOOTH ON TABLET & PC (>= 768px) -->
+  <div id="clash-canvas-container" class="video-canvas-container fixed inset-0 pointer-events-none z-0 overflow-hidden hidden md:block">
+    <canvas id="clash-canvas" class="w-full h-full block"></canvas>
+    <!-- Cinematic Vignette Overlay: subtle so the frames are vivid and visible -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(2,6,13,0.15)_0%,_rgba(2,6,13,0.55)_60%,_rgba(2,6,13,0.88)_100%)] pointer-events-none"></div>
+  </div>
+
+  <!-- Header Bar -->
+  <header class="w-full border-b border-brass/25 bg-[#02060d]/90 backdrop-blur-md px-3 sm:px-6 md:px-8 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40">
+    <div class="flex items-center gap-2.5 sm:gap-3">
+      <a href="/" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-abyss-900 border border-brass/40 flex items-center justify-center hover:border-doubloon-400 transition shrink-0" title="Return to Voyage">
+        <svg class="w-4 h-4 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </a>
+      <div>
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <h1 class="font-pirate text-xl sm:text-2xl md:text-3xl blood-gradient-text tracking-wider">
+            DEAD MAN'S CIPHER
+          </h1>
+          <span class="px-2 py-0.5 rounded-full bg-blood-900/70 border border-blood-500/60 text-[9px] sm:text-[10px] font-cinzel text-blood-300 font-bold uppercase tracking-wider">
+            ⚔️ Attack Simulator
+          </span>
+        </div>
+        <p class="font-cinzel text-[9px] sm:text-[10px] md:text-xs text-doubloon-400/80 uppercase tracking-widest hidden sm:block">
+          Sender Missive • Interceptor Modifies Message • Receiver Gets Modified Text
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
+      <a href="/encrypt" class="flex items-center gap-1 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/30 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-cinzel text-parchment-300 transition">
+        <span>📜 Desk</span>
+      </a>
+
+      <a href="/steganography" class="flex items-center gap-1 bg-abyss-900/90 hover:bg-abyss-800 border border-kraken-400/40 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-cinzel text-kraken-300 transition">
+        <span>🗺️ Stego</span>
+      </a>
+
+      <!-- Audio toggle -->
+      <button id="audio-toggle-btn" class="flex items-center gap-1 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/40 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-cinzel text-parchment-200 shadow-md transition hover:border-doubloon-400">
+        <svg class="w-3.5 h-3.5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="audio-status-text" class="hidden sm:inline text-[11px] text-parchment-300">Audio: OFF</span>
+      </button>
+
+      <a href="/" class="hidden sm:flex items-center gap-1 bg-doubloon-500 hover:bg-doubloon-400 text-abyss-950 font-cinzel font-bold px-3 py-1.5 rounded-full text-xs shadow-lg transition">
+        <span>Voyage</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
+    <!-- Top Flow Visualizer & Clash HUD Bar -->
+    <div class="parchment-box rounded-2xl p-3.5 sm:p-5 border border-brass/30 shadow-lg">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4 text-center lg:text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blood-950 border border-blood-500 flex items-center justify-center text-xl shrink-0">
+            ⚔️
+          </div>
+          <div>
+            <h2 class="font-pirate text-lg sm:text-xl md:text-2xl text-parchment-100 tracking-wide">
+              Man-In-The-Middle: Interceptor Modifies Senders Message
+            </h2>
+            <p class="font-parchment italic text-xs sm:text-sm text-parchment-300">
+              Modify the secret text in Step 2. Choose whether the receiver gets your fake text or catches the forgery!
+            </p>
+          </div>
+        </div>
+
+        <!-- Naval Clash Frame Indicator & Scrubber: TABLET & PC ONLY (>=768px) -->
+        <div class="video-only-control hidden md:flex flex-wrap items-center justify-center gap-2 text-xs font-mono">
+          <div class="flex items-center gap-2 bg-abyss-950/90 border border-blood-500/50 px-3 py-1.5 rounded-xl shadow-inner">
+            <span class="w-2.5 h-2.5 rounded-full bg-blood-500 animate-ping"></span>
+            <span class="text-blood-400 font-bold text-[10px] uppercase tracking-wider">Clash Battle:</span>
+            <span id="clash-hud-frame" class="text-parchment-100 font-bold text-[11px]">001 / 240</span>
+            <input type="range" id="clash-hud-scrubber" min="0" max="239" value="0" class="w-24 lg:w-32 accent-blood-500 cursor-pointer" title="Scroll or Drag to Scrub Pirates Clashing" />
+            <button id="clash-play-pause-btn" class="px-2 py-0.5 rounded bg-blood-900/60 hover:bg-blood-900 border border-blood-500/50 text-[10px] text-blood-300 transition">
+              ▶ Play
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Badge Indicator (< 768px) -->
+        <div class="md:hidden flex items-center gap-2 text-xs font-mono bg-abyss-950/80 px-3 py-1 rounded-full border border-brass/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="text-parchment-300 text-[11px]">Mobile Tactical Console</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLET & PC FEATURED BATTLE STATUS STRIP (>= 768px) -->
+    <div class="video-only-control hidden md:flex items-center justify-between parchment-box rounded-xl px-4 py-2.5 border border-blood-500/40 text-xs font-mono">
+      <div class="flex items-center gap-2">
+        <span class="text-blood-400 font-bold text-sm">⚔️ Battle Scene:</span>
+        <span id="clash-phase-text" class="text-parchment-200 font-cinzel text-xs">Phase 1 • Approaching Galleon & Grappling Hooks</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-[10px] text-parchment-400 mr-1">Quick Jump:</span>
+        <button type="button" onclick="jumpToClashFrame(0)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">⚓ Approach</button>
+        <button type="button" onclick="jumpToClashFrame(75)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">💥 Broadside</button>
+        <button type="button" onclick="jumpToClashFrame(145)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">⚔️ Cutlass Duel</button>
+        <button type="button" onclick="jumpToClashFrame(225)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">🏴‍☠️ Victory</button>
+      </div>
+    </div>
+
+    <!-- ================= 3-COLUMN PIPELINE ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
+
+      <!-- ================= 1. SENDER PIRATE (LEFT) ================= -->
+      <div class="parchment-box rounded-3xl p-4 sm:p-5 md:p-6 border border-doubloon-400/40 shadow-2xl flex flex-col justify-between min-h-[580px] lg:min-h-[640px]">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center justify-between border-b border-doubloon-400/20 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-abyss-900 border border-doubloon-400/60 flex items-center justify-center text-xl shrink-0">
+                🏴‍☠️
+              </div>
+              <div>
+                <span class="font-cinzel text-[10px] text-doubloon-400 font-bold uppercase tracking-widest block">Step 1 • Fleet Origin</span>
+                <h3 class="font-pirate text-xl sm:text-2xl text-parchment-100">Captain Blackbeard (Sender)</h3>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-doubloon-500/10 border border-doubloon-400/30 text-[9px] sm:text-[10px] font-mono text-doubloon-300">
+              Original Message
+            </span>
+          </div>
+
+          <div class="space-y-3 sm:space-y-3.5">
+            <!-- Coordinates -->
+            <div>
+              <label class="block font-cinzel text-[11px] text-parchment-300 mb-1">
+                Secret Treasure Coordinates:
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="sender-lat" value="19.0760° N" class="w-full bg-abyss-900 border border-brass/40 rounded-lg px-2.5 py-2 text-xs font-mono text-doubloon-300 outline-none" />
+                <input type="text" id="sender-lng" value="72.8777° W" class="w-full bg-abyss-900 border border-brass/40 rounded-lg px-2.5 py-2 text-xs font-mono text-doubloon-300 outline-none" />
+              </div>
+            </div>
+
+            <!-- Secret Missive -->
+            <div>
+              <label class="block font-cinzel text-[11px] text-parchment-300 mb-1 flex justify-between">
+                <span>Secret Pirate Missive:</span>
+                <button type="button" onclick="setSamplePreset()" class="text-[10px] text-doubloon-400 underline hover:text-doubloon-300">Load Preset</button>
+              </label>
+              <textarea id="sender-message" rows="3" class="w-full bg-abyss-900 border border-brass/40 rounded-lg p-2.5 text-xs sm:text-sm font-parchment text-parchment-100 outline-none focus:border-doubloon-400">Meet at the eastern cove. Aztec gold chest buried under the hanging skull.</textarea>
+            </div>
+
+            <!-- Shared Passphrase -->
+            <div>
+              <label class="block font-cinzel text-[11px] text-parchment-300 mb-1">
+                Secret Passphrase:
+              </label>
+              <input type="text" id="sender-pass" value="blackbeard_secret_seal_88" class="w-full bg-abyss-900 border border-brass/40 rounded-lg px-2.5 py-2 text-xs font-mono text-parchment-100 outline-none" />
+            </div>
+
+            <!-- Outgoing Encrypted Transmission -->
+            <div>
+              <div class="flex items-center justify-between text-[11px] font-cinzel text-parchment-400 mb-1">
+                <span>Outgoing Sealed Cipher:</span>
+                <span id="sender-msg-id" class="text-doubloon-400 font-mono font-bold">DMC-7F2A91</span>
+              </div>
+              <textarea id="sender-ciphertext" readonly rows="3" class="w-full bg-abyss-950 border border-doubloon-400/30 rounded-lg p-2 text-[10px] sm:text-[11px] font-mono text-doubloon-300/90 outline-none" placeholder="Encrypting..."></textarea>
+              <div class="text-[10px] font-mono text-parchment-400 mt-1 flex justify-between">
+                <span>SHA-256: <span id="sender-sha-short" class="text-kraken-400">--</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-brass/20 space-y-2">
+          <button id="sender-encrypt-btn" onclick="handleSenderEncrypt()" class="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-doubloon-600 to-doubloon-500 hover:from-doubloon-500 hover:to-doubloon-400 text-abyss-950 font-cinzel font-bold text-xs sm:text-sm shadow-lg transition flex items-center justify-center gap-2 active:scale-[0.98]">
+            <span>🩸 1. Encrypt & Broadcast Transmission</span>
+          </button>
+          <button type="button" onclick="sendCleanOriginalDirect()" class="w-full py-2 rounded-lg bg-abyss-900/80 hover:bg-abyss-800 border border-kraken-400/40 text-kraken-300 font-cinzel text-[11px] sm:text-xs transition active:scale-[0.98]">
+            ⚡ Send Clean Original (Bypass Interceptor)
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 2. MIDDLE INTERCEPTOR / INTERPRETER (CENTER) ================= -->
+      <div class="parchment-box rounded-3xl p-4 sm:p-5 md:p-6 border border-blood-500/60 shadow-2xl flex flex-col justify-between min-h-[580px] lg:min-h-[640px] relative bg-blood-950/20">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center justify-between border-b border-blood-500/30 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-blood-900/70 border border-blood-500 flex items-center justify-center text-xl shrink-0">
+                ⚔️
+              </div>
+              <div>
+                <span class="font-cinzel text-[10px] text-blood-400 font-bold uppercase tracking-widest block">Step 2 • The Interceptor</span>
+                <h3 class="font-pirate text-xl sm:text-2xl text-blood-300">Middle Interceptor (Attacker)</h3>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-blood-900/60 border border-blood-500/50 text-[9px] sm:text-[10px] font-mono text-blood-300">
+              TAMPER CONSOLE
+            </span>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Intercepted Original Preview -->
+            <div>
+              <span class="block font-cinzel text-[11px] text-parchment-400 mb-1">
+                Intercepted Sender's Text:
+              </span>
+              <div id="interceptor-original-preview" class="bg-abyss-950/80 border border-brass/20 rounded-lg p-2 text-xs font-parchment italic text-parchment-300 max-h-16 overflow-y-auto">
+                Meet at the eastern cove. Aztec gold chest buried under the hanging skull.
+              </div>
+            </div>
+
+            <!-- EDIT MODIFIED MESSAGE -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block font-cinzel text-xs font-bold text-blood-400">
+                  ✍️ Modify The Secret Message Text:
+                </label>
+                <span class="text-[10px] text-parchment-400 font-mono">You are modifying</span>
+              </div>
+              <textarea id="attacker-modified-text" rows="3" class="w-full bg-abyss-950 border-2 border-blood-500 rounded-xl p-2.5 text-xs sm:text-sm font-mono text-blood-300 outline-none focus:ring-2 focus:ring-blood-400" placeholder="Type modified secret message here...">Ambush! Do not go to eastern cove. Sail straight into Kraken Reef at midnight!</textarea>
+            </div>
+
+            <!-- Quick Presets -->
+            <div>
+              <span class="block text-[10px] font-cinzel text-parchment-400 mb-1">Quick Tampering Presets:</span>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="setPresetModification(1)" class="py-1.5 px-1 rounded bg-abyss-900 hover:bg-blood-950 border border-blood-500/40 text-[10px] font-cinzel text-blood-300 truncate transition">
+                  🏴‍☠️ Ambush Trap
+                </button>
+                <button type="button" onclick="setPresetModification(2)" class="py-1.5 px-1 rounded bg-abyss-900 hover:bg-blood-950 border border-blood-500/40 text-[10px] font-cinzel text-blood-300 truncate transition">
+                  📍 Fake Coords
+                </button>
+                <button type="button" onclick="setPresetModification(3)" class="py-1.5 px-1 rounded bg-abyss-900 hover:bg-blood-950 border border-blood-500/40 text-[10px] font-cinzel text-blood-300 truncate transition">
+                  💰 Surrender Gold
+                </button>
+              </div>
+            </div>
+
+            <!-- Transmission Mode Selection -->
+            <div class="bg-abyss-950 p-2.5 rounded-xl border border-blood-500/30 space-y-2">
+              <span class="block font-cinzel text-[10px] text-parchment-400 uppercase tracking-wider font-bold">
+                Transmission Interception Mode:
+              </span>
+
+              <label class="flex items-start gap-2 cursor-pointer">
+                <input type="radio" name="tamperMode" value="unauthenticated" checked onchange="onTamperModeChange()" class="mt-0.5 accent-blood-500" />
+                <div class="text-[11px]">
+                  <span class="text-blood-300 font-bold block">1. Unauthenticated Transmission</span>
+                  <span class="text-parchment-400 text-[10px]">Receiver receives and displays your modified text directly!</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2 cursor-pointer">
+                <input type="radio" name="tamperMode" value="authenticated" onchange="onTamperModeChange()" class="mt-0.5 accent-blood-500" />
+                <div class="text-[11px]">
+                  <span class="text-doubloon-300 font-bold block">2. Tamper AES-256-GCM Seal</span>
+                  <span class="text-parchment-400 text-[10px]">Receiver checks cryptographic tag and detects forgery!</span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-blood-600/30 space-y-2">
+          <button id="forward-tampered-btn" onclick="handleForwardToReceiver()" class="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-blood-700 via-blood-600 to-blood-500 hover:from-blood-600 hover:to-blood-400 text-white font-cinzel font-bold text-xs sm:text-sm shadow-xl transition flex items-center justify-center gap-2 active:scale-[0.98]">
+            <span>⚔️ 2. Forward Modified Message ➔ Receiver</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 3. RECEIVER PIRATE (RIGHT) ================= -->
+      <div class="parchment-box rounded-3xl p-4 sm:p-5 md:p-6 border border-kraken-400/40 shadow-2xl flex flex-col justify-between min-h-[580px] lg:min-h-[640px]">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center justify-between border-b border-kraken-400/20 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-abyss-900 border border-kraken-400/60 flex items-center justify-center text-xl shrink-0">
+                ⚓
+              </div>
+              <div>
+                <span class="font-cinzel text-[10px] text-kraken-400 font-bold uppercase tracking-widest block">Step 3 • Fleet Destination</span>
+                <h3 class="font-pirate text-xl sm:text-2xl text-parchment-100">Quartermaster (Receiver)</h3>
+              </div>
+            </div>
+            <span id="receiver-status-pill" class="px-2 py-0.5 rounded-full bg-abyss-950 border border-brass/30 text-[9px] sm:text-[10px] font-mono text-parchment-400">
+              Awaiting Missive
+            </span>
+          </div>
+
+          <div class="space-y-3 sm:space-y-3.5">
+            <!-- Received Status -->
+            <div class="bg-abyss-950 p-2.5 rounded-lg border border-brass/20 text-[10px] sm:text-[11px] font-mono text-parchment-300 space-y-1">
+              <div class="flex justify-between">
+                <span>Received Message ID:</span>
+                <span id="receiver-msg-id" class="text-parchment-100 font-bold">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Transmission Security:</span>
+                <span id="receiver-security-mode" class="text-doubloon-400 font-bold">--</span>
+              </div>
+            </div>
+
+            <!-- Real-time Verification Checks -->
+            <div class="space-y-1 font-mono text-xs">
+              <span class="block font-cinzel text-[11px] text-parchment-300">
+                Cryptographic Integrity Verification:
+              </span>
+              <div class="bg-abyss-950 p-2.5 rounded-xl border border-brass/20 space-y-1.5 text-[11px]">
+                <div class="flex justify-between items-center">
+                  <span class="text-parchment-400">1. Replay Check:</span>
+                  <span id="rec-check-replay" class="font-bold text-parchment-500">PENDING</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-parchment-400">2. Content Integrity:</span>
+                  <span id="rec-check-sha" class="font-bold text-parchment-500">PENDING</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-parchment-400">3. AES-GCM Auth Seal:</span>
+                  <span id="rec-check-gcm" class="font-bold text-parchment-500">PENDING</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- THE DECRYPTED / RECEIVED TEXT DISPLAY -->
+            <div>
+              <span class="block font-cinzel text-xs font-bold text-parchment-200 mb-1">
+                📬 Received Message Displayed to Receiver:
+              </span>
+              <div id="receiver-message-display" class="bg-abyss-950 p-3 rounded-xl border border-brass/20 min-h-[140px] flex flex-col justify-center text-center">
+                <span class="text-parchment-500 italic text-xs font-parchment">
+                  Awaiting transmission from sea...
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-brass/20 space-y-2">
+          <button id="receiver-verify-btn" onclick="executeReceiverVerification()" class="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-kraken-500 to-teal-600 hover:from-kraken-400 hover:to-teal-500 text-abyss-950 font-cinzel font-bold text-xs sm:text-sm shadow-lg transition flex items-center justify-center gap-2 active:scale-[0.98]">
+            <span>⚓ 3. Inspect & Decrypt Packet</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= BOTTOM VERDICT & SUMMARY BANNER ================= -->
+    <div id="summary-banner" class="parchment-box rounded-2xl p-4 sm:p-5 border border-brass/30 hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div class="flex items-center gap-3">
+          <div id="summary-icon" class="text-3xl">🛡️</div>
+          <div>
+            <h4 id="summary-title" class="font-pirate text-xl sm:text-2xl text-parchment-100">
+              Security Verdict
+            </h4>
+            <p id="summary-desc" class="font-parchment text-xs sm:text-sm text-parchment-300">
+              Explanation of how the message modification was handled.
+            </p>
+          </div>
+        </div>
+        <div id="summary-badge-container"></div>
+      </div>
+    </div>
+
+    <!-- ================= BATTLE SCRAPBOOK & SCROLL TRACK (TABLET & PC ONLY) ================= -->
+    <div class="video-only-control hidden md:block parchment-box rounded-3xl p-6 border border-brass/30 text-center space-y-3 relative overflow-hidden">
+      <div class="flex items-center justify-center gap-2">
+        <span class="text-xl">⚔️</span>
+        <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
+          The Boarding Battle: Pirates Clashing
+        </h3>
+        <span class="text-xl">🏴‍☠️</span>
+      </div>
+      <p class="font-parchment italic text-sm text-parchment-300 max-w-xl mx-auto">
+        "Scroll down the page or drag the battle scrubber above to watch the cutlass clash and cannon smoke across all 240 high-octane frames in the background."
+      </p>
+      <div class="flex items-center justify-center gap-3 pt-2">
+        <span class="text-xs font-mono text-doubloon-400">Scroll Down to Scrub Battle ➔</span>
+        <div class="w-6 h-6 rounded-full border border-blood-500/50 flex items-center justify-center animate-bounce">
+          <svg class="w-3.5 h-3.5 text-blood-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra scroll runway on PC/Tablet so scrolling down scrubs through all 240 frames comfortably -->
+    <div class="video-only-control hidden md:flex h-[90vh] flex-col items-center justify-end pb-12 text-center pointer-events-none">
+      <div class="bg-abyss-950/80 border border-brass/30 px-4 py-2 rounded-full text-xs font-mono text-parchment-400">
+        ⚓ End of Battle Waters • Scroll Up to Return to Interception Deck
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sound Synth -->
+  <script src="/static/js/soundSynth.js"></script>
+
+  <!-- Pirates Clashing Canvas Scrubbing Engine (Tablet & PC Only) -->
+  <script>
+    // =========================================================================
+    // PIRATES CLASHING: ULTRA-SMOOTH 240-FRAME SCROLL SCRUBBING ENGINE
+    // - Desktop & Tablet (>= 768px): Active 60fps smooth inertial scrubbing
+    // - Mobile (< 768px): Video frames disabled to save bandwidth and CPU
+    // =========================================================================
+    (function() {
+      // STRICT CHECK: Skip loading on mobile to save bandwidth & CPU
+      if (window.innerWidth < 768) {
+        console.log('[ClashEngine] Mobile device (<768px): Video frames disabled.');
+        return;
+      }
+
+      const TOTAL_CLASH_FRAMES = 240;
+      const clashImages = new Array(TOTAL_CLASH_FRAMES);
+      const loadedFrames = new Array(TOTAL_CLASH_FRAMES).fill(false);
+      let targetClashFrame = 0;
+      let currentClashFrame = 0;
+      let lastDrawnClashFrame = -1;
+      let isClashPlaying = false;
+      let playInterval = null;
+
+      const canvas = document.getElementById('clash-canvas');
+      const ctx = canvas ? canvas.getContext('2d', { alpha: false }) : null;
+      const hudFrame = document.getElementById('clash-hud-frame');
+      const hudScrubber = document.getElementById('clash-hud-scrubber');
+      const playBtn = document.getElementById('clash-play-pause-btn');
+      const phaseText = document.getElementById('clash-phase-text');
+
+      // Update Phase text based on frame index
+      function updateBattlePhaseText(idx) {
+        if (!phaseText) return;
+        if (idx < 60) {
+          phaseText.textContent = `Phase 1 • Approaching Galleon & Grappling Hooks (Frame ${idx + 1}/240)`;
+        } else if (idx < 120) {
+          phaseText.textContent = `Phase 2 • Broadside Cannon Fire & Boarding (Frame ${idx + 1}/240)`;
+        } else if (idx < 180) {
+          phaseText.textContent = `Phase 3 • Main Deck Cutlass Duel (Frame ${idx + 1}/240)`;
+        } else {
+          phaseText.textContent = `Phase 4 • Quarterdeck Plunder & Victory Flag (Frame ${idx + 1}/240)`;
+        }
+      }
+
+      // Responsive Canvas Setup with Retina DPR
+      function resizeCanvas() {
+        if (!canvas) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+
+        lastDrawnClashFrame = -1; // Force redraw
+        drawClashFrame(Math.round(currentClashFrame));
+      }
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          resizeCanvas();
+        }
+      });
+
+      // Find nearest loaded frame to guarantee ZERO blank screens or stutters
+      function getBestAvailableFrame(preferredIdx) {
+        if (loadedFrames[preferredIdx] && clashImages[preferredIdx]) {
+          return preferredIdx;
+        }
+        for (let offset = 1; offset < TOTAL_CLASH_FRAMES; offset++) {
+          const prev = preferredIdx - offset;
+          if (prev >= 0 && loadedFrames[prev] && clashImages[prev]) return prev;
+          const next = preferredIdx + offset;
+          if (next < TOTAL_CLASH_FRAMES && loadedFrames[next] && clashImages[next]) return next;
+        }
+        return -1;
+      }
+
+      // Draw frame to canvas with aspect-ratio cover
+      function drawClashFrame(idx) {
+        if (!ctx || !canvas) return;
+        idx = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, idx));
+        const frameToDraw = getBestAvailableFrame(idx);
+        if (frameToDraw < 0) return;
+
+        const img = clashImages[frameToDraw];
+        if (!img || !img.complete || img.naturalWidth === 0) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const cw = canvas.width / dpr;
+        const ch = canvas.height / dpr;
+        const iw = img.naturalWidth;
+        const ih = img.naturalHeight;
+
+        // Cover calculation
+        const imgRatio = iw / ih;
+        const canvasRatio = cw / ch;
+        let drawW, drawH, offsetX, offsetY;
+
+        if (canvasRatio > imgRatio) {
+          drawW = cw;
+          drawH = cw / imgRatio;
+          offsetX = 0;
+          offsetY = (ch - drawH) / 2;
+        } else {
+          drawW = ch * imgRatio;
+          drawH = ch;
+          offsetX = (cw - drawW) / 2;
+          offsetY = 0;
+        }
+
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        ctx.fillStyle = '#02060d';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+        ctx.restore();
+
+        lastDrawnClashFrame = frameToDraw;
+
+        // Update HUD
+        const padIdx = (idx + 1).toString().padStart(3, '0');
+        if (hudFrame) hudFrame.textContent = `${padIdx} / ${TOTAL_CLASH_FRAMES}`;
+        if (hudScrubber && !hudScrubber.matches(':active')) {
+          hudScrubber.value = idx;
+        }
+        updateBattlePhaseText(idx);
+      }
+
+      // High-performance image preloader with instant cache recognition
+      function preloadClashFrames() {
+        for (let i = 0; i < TOTAL_CLASH_FRAMES; i++) {
+          const img = new Image();
+          const frameNum = (i + 1).toString().padStart(4, '0');
+
+          img.onload = () => {
+            loadedFrames[i] = true;
+            if (img.decode) {
+              img.decode().then(() => {
+                if (i === 0 && lastDrawnClashFrame < 0) drawClashFrame(0);
+              }).catch(() => {
+                if (i === 0 && lastDrawnClashFrame < 0) drawClashFrame(0);
+              });
+            } else if (i === 0 && lastDrawnClashFrame < 0) {
+              drawClashFrame(0);
+            }
+          };
+
+          img.src = `/static/clash_frames/frame_${frameNum}.jpg`;
+          clashImages[i] = img;
+
+          // If cached in memory
+          if (img.complete && img.naturalWidth > 0) {
+            loadedFrames[i] = true;
+            if (i === 0 && lastDrawnClashFrame < 0) {
+              drawClashFrame(0);
+            }
+          }
+        }
+      }
+
+      // Smooth 60fps Lerp Render Loop
+      function renderLoop() {
+        const diff = targetClashFrame - currentClashFrame;
+        // Inertial damping factor
+        currentClashFrame += diff * 0.14;
+
+        const frameIdx = Math.round(currentClashFrame);
+        const clampedIdx = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, frameIdx));
+
+        if (clampedIdx !== lastDrawnClashFrame) {
+          drawClashFrame(clampedIdx);
+        }
+
+        requestAnimationFrame(renderLoop);
+      }
+
+      // Scroll Progress Handler
+      function handleScrollProgress(progress) {
+        if (isClashPlaying) return;
+        targetClashFrame = Math.max(0, Math.min(1, progress)) * (TOTAL_CLASH_FRAMES - 1);
+      }
+
+      function computeNativeScrollProgress() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (maxScroll <= 0) return 0;
+        return Math.max(0, Math.min(1, (window.scrollY || window.pageYOffset) / maxScroll));
+      }
+
+      // Initialize Lenis Smooth Scrolling
+      if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({
+          duration: 1.1,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          wheelMultiplier: 0.9,
+          touchMultiplier: 1.5,
+        });
+
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        lenis.on('scroll', (e) => {
+          if (typeof e.progress === 'number') {
+            handleScrollProgress(e.progress);
+          } else {
+            handleScrollProgress(computeNativeScrollProgress());
+          }
+        });
+      } else {
+        window.addEventListener('scroll', () => {
+          handleScrollProgress(computeNativeScrollProgress());
+        }, { passive: true });
+      }
+
+      // Manual Scrubber Slider
+      if (hudScrubber) {
+        hudScrubber.addEventListener('input', (e) => {
+          targetClashFrame = parseInt(e.target.value);
+          currentClashFrame = targetClashFrame;
+          drawClashFrame(targetClashFrame);
+        });
+      }
+
+      // Play / Pause Button
+      if (playBtn) {
+        playBtn.addEventListener('click', () => {
+          isClashPlaying = !isClashPlaying;
+          if (isClashPlaying) {
+            playBtn.innerHTML = '<span>⏸ Pause</span>';
+            playBtn.classList.add('bg-blood-700', 'text-white');
+            playInterval = setInterval(() => {
+              targetClashFrame = (targetClashFrame + 1) % TOTAL_CLASH_FRAMES;
+              currentClashFrame = targetClashFrame;
+              drawClashFrame(targetClashFrame);
+            }, 1000 / 24);
+          } else {
+            playBtn.innerHTML = '<span>▶ Play</span>';
+            playBtn.classList.remove('bg-blood-700', 'text-white');
+            clearInterval(playInterval);
+          }
+        });
+      }
+
+      // Expose quick jump function
+      window.jumpToClashFrame = function(idx) {
+        targetClashFrame = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, idx));
+        currentClashFrame = targetClashFrame;
+        drawClashFrame(targetClashFrame);
+      };
+
+      // Immediate initialization
+      resizeCanvas();
+      preloadClashFrames();
+      requestAnimationFrame(renderLoop);
+    })();
+  </script>
+
+  <!-- Interactive Man-in-the-Middle Logic -->
+  <script>
+    let currentOriginalTransmission = null;
+    let packetInTransit = null;
+    const processedMessageIds = new Set();
+
+    // Audio setup
+    const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioText = document.getElementById('audio-status-text');
+    if (audioBtn) {
+      audioBtn.addEventListener('click', () => {
+        if (window.soundSynth) {
+          const isMuted = window.soundSynth.toggleMute();
+          if (audioText) audioText.textContent = isMuted ? 'Audio: OFF' : 'Audio: ON';
+          if (!isMuted) window.soundSynth.playCoinClink();
+        }
+      });
+    }
+
+    // Helper: SHA-256
+    async function computeSha256(text) {
+      const encoder = new TextEncoder();
+      const hashBuf = await window.crypto.subtle.digest('SHA-256', encoder.encode(text));
+      return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function generateId() {
+      const arr = new Uint8Array(3);
+      window.crypto.getRandomValues(arr);
+      return 'DMC-' + Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    function setSamplePreset() {
+      document.getElementById('sender-lat').value = "20.0345° N";
+      document.getElementById('sender-lng').value = "72.4712° W";
+      document.getElementById('sender-message').value = "Tortuga Haven: 50 chests of Spanish silver hidden beneath the old rum distillery.";
+      document.getElementById('sender-pass').value = "blackbeard_silver_key_99";
+      handleSenderEncrypt();
+    }
+
+    function setPresetModification(idx) {
+      const txtArea = document.getElementById('attacker-modified-text');
+      if (idx === 1) {
+        txtArea.value = "Ambush! Turn ship north to Kraken Reef at midnight. Do not go to eastern cove!";
+      } else if (idx === 2) {
+        txtArea.value = "Fleet rendezvous altered! New Coordinates: Lat 0.0000° N, Lng 0.0000° W.";
+      } else if (idx === 3) {
+        txtArea.value = "Surrender your weapons! The Royal Navy has captured Captain Blackbeard!";
+      }
+      if (window.soundSynth) window.soundSynth.playCreak();
+    }
+
+    function onTamperModeChange() {
+      if (window.soundSynth) window.soundSynth.playCreak();
+    }
+
+    // =========================================================================
+    // STEP 1: SENDER ENCRYPTS
+    // =========================================================================
+    async function handleSenderEncrypt() {
+      const lat = document.getElementById('sender-lat').value.trim();
+      const lng = document.getElementById('sender-lng').value.trim();
+      const msg = document.getElementById('sender-message').value.trim();
+      const pass = document.getElementById('sender-pass').value.trim();
+      const btn = document.getElementById('sender-encrypt-btn');
+
+      if (!msg || !pass) {
+        alert('Avast! Please enter a secret missive and passphrase.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Stamping AES-256-GCM Seal...</span>';
+
+      const fullPlaintext = `${msg} [COORDINATES: Lat ${lat}, Lng ${lng}]`;
+
+      try {
+        const res = await fetch('/api/cipher/encrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: fullPlaintext, key: pass, algorithm: 'aes' })
+        });
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Encryption failed');
+
+        const msgId = generateId();
+        const ciphertext = data.ciphertext;
+        const sha = await computeSha256(ciphertext);
+
+        currentOriginalTransmission = {
+          messageId: msgId,
+          ciphertext: ciphertext,
+          passphrase: pass,
+          sha256: sha,
+          plaintext: fullPlaintext
+        };
+
+        // Populate Sender UI
+        document.getElementById('sender-msg-id').textContent = msgId;
+        document.getElementById('sender-ciphertext').value = ciphertext;
+        document.getElementById('sender-sha-short').textContent = sha.slice(0, 16) + '...';
+
+        // Update Interceptor view
+        document.getElementById('interceptor-original-preview').textContent = fullPlaintext;
+
+        if (window.soundSynth) {
+          window.soundSynth.playCannon();
+          setTimeout(() => window.soundSynth.playCoinClink(), 300);
+        }
+      } catch (err) {
+        alert('Encryption error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🩸 1. Encrypt & Broadcast Transmission</span>';
+      }
+    }
+
+    // Bypass Interceptor: Send clean original
+    function sendCleanOriginalDirect() {
+      if (!currentOriginalTransmission) {
+        alert('Encrypt a message in Step 1 first!');
+        return;
+      }
+      packetInTransit = {
+        isCleanOriginal: true,
+        messageId: currentOriginalTransmission.messageId,
+        mode: 'authenticated',
+        ciphertext: currentOriginalTransmission.ciphertext,
+        passphrase: currentOriginalTransmission.passphrase,
+        expectedSha: currentOriginalTransmission.sha256,
+        originalPlaintext: currentOriginalTransmission.plaintext,
+        modifiedPlaintext: null
+      };
+
+      deliverPacketToReceiver();
+    }
+
+    // =========================================================================
+    // STEP 2: INTERCEPTOR FORWARDS MODIFIED TEXT
+    // =========================================================================
+    async function handleForwardToReceiver() {
+      if (!currentOriginalTransmission) {
+        alert('Encrypt a message in Step 1 first!');
+        return;
+      }
+
+      const modifiedText = document.getElementById('attacker-modified-text').value.trim();
+      const mode = document.querySelector('input[name="tamperMode"]:checked').value;
+
+      if (!modifiedText) {
+        alert('Please enter a modified secret message text!');
+        return;
+      }
+
+      let outgoingCiphertext = '';
+      if (mode === 'unauthenticated') {
+        outgoingCiphertext = `UNAUTHENTICATED_CARRIER:${modifiedText}`;
+      } else {
+        const rawB64 = currentOriginalTransmission.ciphertext.replace('PIRATE_AES:', '');
+        const bytes = Uint8Array.from(atob(rawB64), c => c.charCodeAt(0));
+        bytes[bytes.length - 5] ^= 0xFF; // corrupt GCM tag
+        outgoingCiphertext = 'PIRATE_AES:' + btoa(String.fromCharCode.apply(null, bytes));
+      }
+
+      packetInTransit = {
+        isCleanOriginal: false,
+        messageId: currentOriginalTransmission.messageId,
+        mode: mode,
+        ciphertext: outgoingCiphertext,
+        passphrase: currentOriginalTransmission.passphrase,
+        expectedSha: currentOriginalTransmission.sha256,
+        originalPlaintext: currentOriginalTransmission.plaintext,
+        modifiedPlaintext: modifiedText
+      };
+
+      if (window.soundSynth) window.soundSynth.playCannon();
+      deliverPacketToReceiver();
+    }
+
+    function deliverPacketToReceiver() {
+      document.getElementById('receiver-msg-id').textContent = packetInTransit.messageId;
+      document.getElementById('receiver-security-mode').textContent = packetInTransit.mode === 'unauthenticated' ? '⚠️ UNPROTECTED' : '🛡️ AES-256-GCM SEALED';
+      document.getElementById('receiver-security-mode').className = packetInTransit.mode === 'unauthenticated' ? 'text-blood-400 font-bold' : 'text-doubloon-400 font-bold';
+      document.getElementById('receiver-status-pill').textContent = 'Packet Delivered';
+      document.getElementById('receiver-status-pill').className = 'px-2 py-0.5 rounded-full bg-doubloon-500/20 border border-doubloon-400/50 text-[9px] sm:text-[10px] font-mono text-doubloon-300';
+
+      executeReceiverVerification();
+    }
+
+    // =========================================================================
+    // STEP 3: RECEIVER INSPECTS & VERIFIES
+    // =========================================================================
+    async function executeReceiverVerification() {
+      if (!packetInTransit) return;
+
+      const p = packetInTransit;
+      const replayEl = document.getElementById('rec-check-replay');
+      const shaEl = document.getElementById('rec-check-sha');
+      const gcmEl = document.getElementById('rec-check-gcm');
+      const display = document.getElementById('receiver-message-display');
+
+      const sBanner = document.getElementById('summary-banner');
+      const sIcon = document.getElementById('summary-icon');
+      const sTitle = document.getElementById('summary-title');
+      const sDesc = document.getElementById('summary-desc');
+      const sBadge = document.getElementById('summary-badge-container');
+
+      // 1. Replay Check
+      const isReplay = processedMessageIds.has(p.messageId);
+      if (isReplay && !p.isCleanOriginal) {
+        replayEl.textContent = '❌ REPLAY DETECTED';
+        replayEl.className = 'font-bold text-blood-400';
+      } else {
+        replayEl.textContent = '✓ FRESH MESSAGE';
+        replayEl.className = 'font-bold text-kraken-400';
+      }
+
+      // CASE A: CLEAN ORIGINAL
+      if (p.isCleanOriginal) {
+        shaEl.textContent = '✓ MATCHES ORIGIN';
+        shaEl.className = 'font-bold text-kraken-400';
+        gcmEl.textContent = '✓ AUTHENTICATED';
+        gcmEl.className = 'font-bold text-kraken-400';
+
+        display.innerHTML = `
+          <div class="text-left space-y-1">
+            <span class="text-kraken-300 font-bold text-xs block">✓ AUTHENTIC FLEET MESSAGE:</span>
+            <div class="bg-abyss-900 p-2.5 rounded-lg text-parchment-100 font-parchment italic text-xs sm:text-sm border border-kraken-400/30 break-words">
+              ${p.originalPlaintext}
+            </div>
+            <span class="text-[10px] font-mono text-kraken-400 block mt-1">Status: Unaltered original verified by Quartermaster.</span>
+          </div>
+        `;
+        display.className = 'bg-kraken-950/60 p-3 rounded-xl border border-kraken-400 min-h-[140px] flex flex-col justify-center';
+
+        sBanner.classList.remove('hidden');
+        sIcon.textContent = '🛡️';
+        sTitle.textContent = 'Authentic Message Received!';
+        sTitle.className = 'font-pirate text-xl sm:text-2xl text-kraken-300';
+        sDesc.textContent = 'The transmission arrived unaltered from Captain Blackbeard. Cryptographic authentication and coordinates verified.';
+        sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-kraken-900 border border-kraken-400 text-xs font-mono text-kraken-300 font-bold">✓ AUTHENTIC</span>';
+
+        processedMessageIds.add(p.messageId);
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        if (window.soundSynth) window.soundSynth.playCoinClink();
+        return;
+      }
+
+      // CASE B: INTERCEPTOR MODIFIED MESSAGE - UNAUTHENTICATED MODE
+      if (p.mode === 'unauthenticated') {
+        shaEl.textContent = '❌ NO INTEGRITY SEAL';
+        shaEl.className = 'font-bold text-blood-400';
+        gcmEl.textContent = '⚠️ NONE (UNPROTECTED)';
+        gcmEl.className = 'font-bold text-blood-400';
+
+        display.innerHTML = `
+          <div class="text-left space-y-1.5 animate-pulse">
+            <span class="text-blood-400 font-bold text-xs block">⚠️ INSECURE TRANSMISSION RECEIVED (MODIFIED TEXT!):</span>
+            <div class="bg-abyss-900 p-2.5 rounded-lg text-blood-300 font-mono text-xs sm:text-sm border border-blood-500 break-words">
+              "${p.modifiedPlaintext}"
+            </div>
+            <span class="text-[10px] sm:text-xs text-blood-400 font-bold block">
+              ☠️ RESULT: Receiver was deceived! Because no cryptographic seal was used, the receiver accepted the interceptor's fake text!
+            </span>
+          </div>
+        `;
+        display.className = 'bg-blood-950/70 p-3 rounded-xl border border-blood-500 min-h-[140px] flex flex-col justify-center';
+
+        sBanner.classList.remove('hidden');
+        sIcon.textContent = '⚠️';
+        sTitle.textContent = 'Receiver Received Modified Text!';
+        sTitle.className = 'font-pirate text-xl sm:text-2xl text-blood-400';
+        sDesc.textContent = `The interceptor changed the secret message to: "${p.modifiedPlaintext}". Without authenticated encryption, the receiver had no way to detect the tampering and accepted the fake orders!`;
+        sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-blood-900 border border-blood-500 text-xs font-mono text-blood-300 font-bold">RECEIVER DECEIVED</span>';
+
+        if (window.soundSynth) window.soundSynth.playCreak();
+        return;
+      }
+
+      // CASE C: INTERCEPTOR MODIFIED MESSAGE - AUTHENTICATED (AES-256-GCM) MODE
+      if (p.mode === 'authenticated') {
+        shaEl.textContent = '❌ MISMATCH (ALTERED)';
+        shaEl.className = 'font-bold text-blood-400';
+        gcmEl.textContent = '❌ FAILED (TAG MISMATCH)';
+        gcmEl.className = 'font-bold text-blood-400';
+
+        display.innerHTML = `
+          <div class="text-center space-y-1.5">
+            <span class="text-blood-400 font-bold text-sm block">☠️ NAVAL FORGERY DETECTED!</span>
+            <div class="bg-abyss-900 p-2.5 rounded-lg text-parchment-300 font-mono text-xs border border-blood-500/50 break-words">
+              Interceptor attempted to alter message to:<br>
+              <span class="text-blood-300 font-bold">"${p.modifiedPlaintext}"</span>
+            </div>
+            <span class="text-[10px] sm:text-xs text-kraken-400 font-bold block">
+              🛡️ DEFENSE SUCCESSFUL: 128-bit AES-GCM GHASH tag failed! Forged ciphertext was discarded without decrypting!
+            </span>
+          </div>
+        `;
+        display.className = 'bg-blood-950/80 p-3 rounded-xl border border-blood-500 min-h-[140px] flex flex-col justify-center';
+
+        sBanner.classList.remove('hidden');
+        sIcon.textContent = '🛡️';
+        sTitle.textContent = 'Naval Forgery Thwarted by AES-256-GCM!';
+        sTitle.className = 'font-pirate text-xl sm:text-2xl text-kraken-300';
+        sDesc.textContent = `The interceptor modified the text to "${p.modifiedPlaintext}". However, the Galois/Counter Mode authentication tag failed, and the receiver discarded the forged transmission!`;
+        sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-kraken-900 border border-kraken-400 text-xs font-mono text-kraken-300 font-bold">FORGERY REJECTED</span>';
+
+        if (window.soundSynth) window.soundSynth.playCreak();
+      }
+    }
+
+    // Auto-initialize sender on load
+    window.addEventListener('DOMContentLoaded', () => {
+      handleSenderEncrypt();
+    });
+  </script>
+</body>
+</html>

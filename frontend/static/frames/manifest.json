@@ -1,0 +1,10 @@
+{
+  "videoName": "p2.webm",
+  "totalFrames": 240,
+  "width": 1920,
+  "height": 1080,
+  "aspectRatio": 1.7778,
+  "duration": 19.97,
+  "pattern": "/static/frames/frame_{index}.jpg",
+  "zeroPadding": 4
+}
