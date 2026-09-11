@@ -1,6 +1,20 @@
 # 🏴‍☠️ DEAD MAN'S CIPHER & TIDES OF FORTUNE — Pirate Scrollytelling & Security Suite
 
+> **🌐 Live Deployment**: **[https://shankscipher.vercel.app/](https://shankscipher.vercel.app/)**  
+> Experience the live cinematic voyage, AES-256 cipher desk, steganography studio, and MITM attack simulator directly in your browser.
+
 A cinematic pirate-themed cryptographic voyage and scrollytelling web application featuring Apple-style scroll-driven frame-by-frame animation, AES-256-GCM authenticated encryption, LSB image steganography, and an interactive Man-In-The-Middle (MitM) Attack Simulator with 60fps video frame scrubbing.
+
+---
+
+## 🌐 Live URLs (Vercel)
+
+| Station | Live Link | Description |
+| :--- | :--- | :--- |
+| 🏴‍☠️ **Voyage Scrollytelling** | **[shankscipher.vercel.app](https://shankscipher.vercel.app/)** | 240-frame interactive pirate odyssey (`p2.webm`) with rotating compass & telemetry |
+| ⚔️ **Attack Simulator** | **[shankscipher.vercel.app/attack-simulator](https://shankscipher.vercel.app/attack-simulator)** | Man-in-the-Middle simulator with 60fps Pirates Clashing boarding battle animation |
+| 📜 **Cipher Desk** | **[shankscipher.vercel.app/encrypt](https://shankscipher.vercel.app/encrypt)** | AES-256-GCM & Caesar authenticated encryption dual station |
+| 🗺️ **Steganography** | **[shankscipher.vercel.app/steganography](https://shankscipher.vercel.app/steganography)** | 1-bit LSB invisible ink secret embedding and extraction into sea charts |
 
 ---
 
@@ -8,9 +22,11 @@ A cinematic pirate-themed cryptographic voyage and scrollytelling web applicatio
 
 ```
 hackathon/
+├── api/
+│   └── index.py               # Vercel serverless WSGI entrypoint
 ├── backend/
 │   ├── app.py                 # All-in-one Flask backend & cryptographic engine
-│   └── requirements.txt       # Dependencies (flask, cryptography, pillow, opencv-python)
+│   └── requirements.txt       # Local development dependencies
 │
 ├── frontend/
 │   ├── templates/
@@ -28,6 +44,8 @@ hackathon/
 │   │   ├── frames/            # Extracted 240 frames from p2.webm
 │   │   └── clash_frames/      # Extracted 240 frames from piratesclashing.mp4
 │
+├── vercel.json                # Vercel serverless deployment routing config
+├── requirements.txt           # Vercel Python builder dependencies
 ├── piratesclashing.mp4        # Source boarding battle footage
 ├── run.py                     # Convenience root launcher
 └── README.md                  # Project documentation
@@ -35,11 +53,11 @@ hackathon/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### 1. Install Dependencies
 ```bash
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 2. Launch the Application
