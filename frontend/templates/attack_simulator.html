@@ -99,14 +99,13 @@
     }
   </style>
 </head>
-<body class="bg-[#02060d] text-[#ebdcb9] min-h-screen md:min-h-[220vh] relative selection:bg-blood-500/30 selection:text-blood-300 font-sans overflow-x-hidden">
+<body class="bg-[#02060d] text-[#ebdcb9] min-h-screen relative selection:bg-blood-500/30 selection:text-blood-300 font-sans overflow-x-hidden">
 
-  <!-- ================= FIXED SCROLLYTELLING CANVAS (PIRATES CLASHING) ================= -->
-  <!-- STRICT RULE: HIDDEN ON MOBILE (< 768px), VISIBLE & SMOOTH ON TABLET & PC (>= 768px) -->
+  <!-- ================= FIXED AMBIENT CANVAS (CINEMATIC BACKDROP) ================= -->
   <div id="clash-canvas-container" class="video-canvas-container fixed inset-0 pointer-events-none z-0 overflow-hidden hidden md:block">
     <canvas id="clash-canvas" class="w-full h-full block"></canvas>
-    <!-- Cinematic Vignette Overlay: subtle so the frames are vivid and visible -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(2,6,13,0.15)_0%,_rgba(2,6,13,0.55)_60%,_rgba(2,6,13,0.88)_100%)] pointer-events-none"></div>
+    <!-- Dark Vignette Overlay so simulator consoles pop out with high contrast -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(2,6,13,0.35)_0%,_rgba(2,6,13,0.75)_55%,_rgba(2,6,13,0.95)_100%)] pointer-events-none"></div>
   </div>
 
   <!-- Header Bar -->
@@ -132,7 +131,7 @@
       </div>
     </div>
 
-    <!-- Navigation links -->
+    <!-- Navigation links & Audio -->
     <div class="flex items-center gap-1.5 sm:gap-2.5">
       <a href="/encrypt" class="flex items-center gap-1 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/30 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-cinzel text-parchment-300 transition">
         <span>📜 Desk</span>
@@ -160,56 +159,101 @@
   <!-- Main Container -->
   <main class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
-    <!-- Top Flow Visualizer & Clash HUD Bar -->
+    <!-- Top Flow Visualizer & Status Bar -->
     <div class="parchment-box rounded-2xl p-3.5 sm:p-5 border border-brass/30 shadow-lg">
       <div class="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4 text-center lg:text-left">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-blood-950 border border-blood-500 flex items-center justify-center text-xl shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-blood-950 border border-blood-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
             ⚔️
           </div>
           <div>
             <h2 class="font-pirate text-lg sm:text-xl md:text-2xl text-parchment-100 tracking-wide">
-              Man-In-The-Middle: Interceptor Modifies Senders Message
+              Man-In-The-Middle Interception Console
             </h2>
             <p class="font-parchment italic text-xs sm:text-sm text-parchment-300">
-              Modify the secret text in Step 2. Choose whether the receiver gets your fake text or catches the forgery!
+              Simulate packet interception in transit. Alter payload plaintext in Step 2, and observe whether the recipient detects forgery or displays modified orders!
             </p>
           </div>
         </div>
 
-        <!-- Naval Clash Frame Indicator & Scrubber: TABLET & PC ONLY (>=768px) -->
-        <div class="video-only-control hidden md:flex flex-wrap items-center justify-center gap-2 text-xs font-mono">
-          <div class="flex items-center gap-2 bg-abyss-950/90 border border-blood-500/50 px-3 py-1.5 rounded-xl shadow-inner">
+        <!-- Real-Time Proxy Telemetry Badge -->
+        <div class="flex items-center gap-2 text-xs font-mono">
+          <div class="flex items-center gap-2.5 bg-abyss-950/90 border border-blood-500/50 px-3.5 py-1.5 rounded-full shadow-inner">
             <span class="w-2.5 h-2.5 rounded-full bg-blood-500 animate-ping"></span>
-            <span class="text-blood-400 font-bold text-[10px] uppercase tracking-wider">Clash Battle:</span>
-            <span id="clash-hud-frame" class="text-parchment-100 font-bold text-[11px]">001 / 240</span>
-            <input type="range" id="clash-hud-scrubber" min="0" max="239" value="0" class="w-24 lg:w-32 accent-blood-500 cursor-pointer" title="Scroll or Drag to Scrub Pirates Clashing" />
-            <button id="clash-play-pause-btn" class="px-2 py-0.5 rounded bg-blood-900/60 hover:bg-blood-900 border border-blood-500/50 text-[10px] text-blood-300 transition">
-              ▶ Play
-            </button>
+            <span class="text-blood-300 font-bold text-[11px] uppercase tracking-wider">MITM PROXY ACTIVE</span>
+            <span class="text-brass/40">•</span>
+            <span id="pipeline-status-text" class="text-doubloon-300 text-[11px]">Ready for Transmission</span>
           </div>
-        </div>
-
-        <!-- Mobile Badge Indicator (< 768px) -->
-        <div class="md:hidden flex items-center gap-2 text-xs font-mono bg-abyss-950/80 px-3 py-1 rounded-full border border-brass/30">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <span class="text-parchment-300 text-[11px]">Mobile Tactical Console</span>
         </div>
       </div>
     </div>
 
-    <!-- TABLET & PC FEATURED BATTLE STATUS STRIP (>= 768px) -->
-    <div class="video-only-control hidden md:flex items-center justify-between parchment-box rounded-xl px-4 py-2.5 border border-blood-500/40 text-xs font-mono">
-      <div class="flex items-center gap-2">
-        <span class="text-blood-400 font-bold text-sm">⚔️ Battle Scene:</span>
-        <span id="clash-phase-text" class="text-parchment-200 font-cinzel text-xs">Phase 1 • Approaching Galleon & Grappling Hooks</span>
+    <!-- ================= LIVE PACKET TRANSMISSION TOPOGRAPHY ================= -->
+    <div class="parchment-box rounded-2xl px-4 sm:px-6 py-4 border border-brass/30 shadow-xl">
+      <div class="flex items-center justify-between border-b border-brass/20 pb-2.5 mb-3.5">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-cinzel text-xs font-bold text-parchment-200 uppercase tracking-wider">
+            Network Pipeline Topology
+          </span>
+        </div>
+        <span class="text-[11px] font-mono text-parchment-400">
+          Simulated Air-Gapped High Seas Channel
+        </span>
       </div>
-      <div class="flex items-center gap-1.5">
-        <span class="text-[10px] text-parchment-400 mr-1">Quick Jump:</span>
-        <button type="button" onclick="jumpToClashFrame(0)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">⚓ Approach</button>
-        <button type="button" onclick="jumpToClashFrame(75)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">💥 Broadside</button>
-        <button type="button" onclick="jumpToClashFrame(145)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">⚔️ Cutlass Duel</button>
-        <button type="button" onclick="jumpToClashFrame(225)" class="px-2 py-0.5 rounded bg-abyss-900 hover:bg-abyss-800 border border-brass/30 text-[10px] text-parchment-300 transition">🏴‍☠️ Victory</button>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center text-center">
+        <!-- Node 1: Sender -->
+        <div id="node-sender-box" class="bg-abyss-950/90 p-3 sm:p-3.5 rounded-2xl border border-doubloon-400/40 transition-all shadow-md">
+          <div class="text-2xl mb-1">🏴‍☠️</div>
+          <div class="font-cinzel font-bold text-xs text-doubloon-300">Captain Blackbeard</div>
+          <div class="text-[10px] font-mono text-parchment-400">Node A • Fleet Origin</div>
+          <span id="node-sender-badge" class="inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-doubloon-500/10 border border-doubloon-400/30 text-[9px] font-mono text-doubloon-300 font-bold">
+            READY
+          </span>
+        </div>
+
+        <!-- Channel 1 -->
+        <div class="flex flex-col items-center justify-center py-1">
+          <span class="text-[10px] font-mono text-parchment-400 mb-1">Sealed Dispatch</span>
+          <div id="channel-1-line" class="flex items-center gap-1.5 text-doubloon-400 font-bold text-sm">
+            <span>───</span>
+            <span id="channel-1-pulse" class="text-base transition-transform duration-300">📡</span>
+            <span>───▶</span>
+          </div>
+          <span id="channel-1-status" class="text-[9px] font-mono text-parchment-500 mt-0.5">Awaiting Broadcast</span>
+        </div>
+
+        <!-- Node 2: Interceptor -->
+        <div id="node-interceptor-box" class="bg-abyss-950/90 p-3 sm:p-3.5 rounded-2xl border border-blood-500/50 transition-all shadow-md bg-blood-950/10">
+          <div class="text-2xl mb-1">⚔️</div>
+          <div class="font-cinzel font-bold text-xs text-blood-300">Middle Interceptor</div>
+          <div class="text-[10px] font-mono text-blood-400/80">Node B • Adversary Eve</div>
+          <span id="node-interceptor-badge" class="inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-blood-900/40 border border-blood-500/50 text-[9px] font-mono text-blood-300 font-bold">
+            LISTENING
+          </span>
+        </div>
+
+        <!-- Channel 2 -->
+        <div class="flex flex-col items-center justify-center py-1">
+          <span class="text-[10px] font-mono text-parchment-400 mb-1">Forwarded Payload</span>
+          <div id="channel-2-line" class="flex items-center gap-1.5 text-blood-400 font-bold text-sm">
+            <span>───</span>
+            <span id="channel-2-pulse" class="text-base transition-transform duration-300">⚡</span>
+            <span>───▶</span>
+          </div>
+          <span id="channel-2-status" class="text-[9px] font-mono text-parchment-500 mt-0.5">Standby</span>
+        </div>
+
+        <!-- Node 3: Receiver -->
+        <div id="node-receiver-box" class="bg-abyss-950/90 p-3 sm:p-3.5 rounded-2xl border border-kraken-400/40 transition-all shadow-md">
+          <div class="text-2xl mb-1">⚓</div>
+          <div class="font-cinzel font-bold text-xs text-kraken-300">Quartermaster</div>
+          <div class="text-[10px] font-mono text-parchment-400">Node C • Fleet Outpost</div>
+          <span id="node-receiver-badge" class="inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-kraken-500/10 border border-kraken-400/30 text-[9px] font-mono text-kraken-300 font-bold">
+            AWAITING
+          </span>
+        </div>
       </div>
     </div>
 
@@ -471,32 +515,34 @@
       </div>
     </div>
 
-    <!-- ================= BATTLE SCRAPBOOK & SCROLL TRACK (TABLET & PC ONLY) ================= -->
-    <div class="video-only-control hidden md:block parchment-box rounded-3xl p-6 border border-brass/30 text-center space-y-3 relative overflow-hidden">
-      <div class="flex items-center justify-center gap-2">
-        <span class="text-xl">⚔️</span>
-        <h3 class="font-pirate text-2xl md:text-3xl text-parchment-100">
-          The Boarding Battle: Pirates Clashing
-        </h3>
-        <span class="text-xl">🏴‍☠️</span>
-      </div>
-      <p class="font-parchment italic text-sm text-parchment-300 max-w-xl mx-auto">
-        "Scroll down the page or drag the battle scrubber above to watch the cutlass clash and cannon smoke across all 240 high-octane frames in the background."
-      </p>
-      <div class="flex items-center justify-center gap-3 pt-2">
-        <span class="text-xs font-mono text-doubloon-400">Scroll Down to Scrub Battle ➔</span>
-        <div class="w-6 h-6 rounded-full border border-blood-500/50 flex items-center justify-center animate-bounce">
-          <svg class="w-3.5 h-3.5 text-blood-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
+    <!-- ================= LIVE TRANSMISSION & SECURITY AUDIT TERMINAL ================= -->
+    <div class="parchment-box rounded-3xl p-5 sm:p-6 border border-brass/30 space-y-3.5 shadow-2xl">
+      <div class="flex items-center justify-between flex-wrap gap-2 border-b border-brass/20 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-abyss-950 border border-brass/40 flex items-center justify-center text-base">
+            📡
+          </div>
+          <div>
+            <h3 class="font-pirate text-xl sm:text-2xl text-parchment-100 tracking-wide">
+              Live Transmission & Security Audit Log
+            </h3>
+            <p class="font-parchment text-xs text-parchment-400 italic">
+              Real-time air-gapped packet telemetry, HMAC-SHA256 signatures, and tamper detection events
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="clearAttackLog()" class="px-3 py-1.5 rounded-lg bg-abyss-950 hover:bg-abyss-900 border border-brass/30 text-[11px] font-mono text-parchment-400 hover:text-doubloon-300 transition">
+            Clear Telemetry
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Extra scroll runway on PC/Tablet so scrolling down scrubs through all 240 frames comfortably -->
-    <div class="video-only-control hidden md:flex h-[90vh] flex-col items-center justify-end pb-12 text-center pointer-events-none">
-      <div class="bg-abyss-950/80 border border-brass/30 px-4 py-2 rounded-full text-xs font-mono text-parchment-400">
-        ⚓ End of Battle Waters • Scroll Up to Return to Interception Deck
+      <!-- Terminal Output Box -->
+      <div id="attack-log-terminal" class="bg-abyss-950/95 border border-brass/25 rounded-2xl p-3.5 sm:p-4 font-mono text-xs text-parchment-300 h-44 overflow-y-auto space-y-1.5 shadow-inner">
+        <div class="text-parchment-500">[SYSTEM] Maritime MITM Interception Console initialized. Network proxy listening.</div>
+        <div class="text-doubloon-400/90">[READY] Step 1: Encrypt and broadcast a secret transmission from Captain Blackbeard to begin.</div>
       </div>
     </div>
 
@@ -505,17 +551,11 @@
   <!-- Sound Synth -->
   <script src="/static/js/soundSynth.js"></script>
 
-  <!-- Pirates Clashing Canvas Scrubbing Engine (Tablet & PC Only) -->
+  <!-- Ambient Cinematic Clash Backdrop Engine (No Frame Counters / No Pause Button) -->
   <script>
-    // =========================================================================
-    // PIRATES CLASHING: ULTRA-SMOOTH 240-FRAME SCROLL SCRUBBING ENGINE
-    // - Desktop & Tablet (>= 768px): Active 60fps smooth inertial scrubbing
-    // - Mobile (< 768px): Video frames disabled to save bandwidth and CPU
-    // =========================================================================
     (function() {
-      // STRICT CHECK: Skip loading on mobile to save bandwidth & CPU
+      // Mobile check: skip canvas overhead on small mobile screens
       if (window.innerWidth < 768) {
-        console.log('[ClashEngine] Mobile device (<768px): Video frames disabled.');
         return;
       }
 
@@ -525,31 +565,11 @@
       let targetClashFrame = 0;
       let currentClashFrame = 0;
       let lastDrawnClashFrame = -1;
-      let isClashPlaying = false;
-      let playInterval = null;
 
       const canvas = document.getElementById('clash-canvas');
       const ctx = canvas ? canvas.getContext('2d', { alpha: false }) : null;
-      const hudFrame = document.getElementById('clash-hud-frame');
-      const hudScrubber = document.getElementById('clash-hud-scrubber');
-      const playBtn = document.getElementById('clash-play-pause-btn');
-      const phaseText = document.getElementById('clash-phase-text');
 
-      // Update Phase text based on frame index
-      function updateBattlePhaseText(idx) {
-        if (!phaseText) return;
-        if (idx < 60) {
-          phaseText.textContent = `Phase 1 • Approaching Galleon & Grappling Hooks (Frame ${idx + 1}/240)`;
-        } else if (idx < 120) {
-          phaseText.textContent = `Phase 2 • Broadside Cannon Fire & Boarding (Frame ${idx + 1}/240)`;
-        } else if (idx < 180) {
-          phaseText.textContent = `Phase 3 • Main Deck Cutlass Duel (Frame ${idx + 1}/240)`;
-        } else {
-          phaseText.textContent = `Phase 4 • Quarterdeck Plunder & Victory Flag (Frame ${idx + 1}/240)`;
-        }
-      }
-
-      // Responsive Canvas Setup with Retina DPR
+      // Responsive Canvas Setup
       function resizeCanvas() {
         if (!canvas) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -561,7 +581,7 @@
         canvas.style.width = `${w}px`;
         canvas.style.height = `${h}px`;
 
-        lastDrawnClashFrame = -1; // Force redraw
+        lastDrawnClashFrame = -1;
         drawClashFrame(Math.round(currentClashFrame));
       }
 
@@ -571,7 +591,6 @@
         }
       });
 
-      // Find nearest loaded frame to guarantee ZERO blank screens or stutters
       function getBestAvailableFrame(preferredIdx) {
         if (loadedFrames[preferredIdx] && clashImages[preferredIdx]) {
           return preferredIdx;
@@ -585,7 +604,6 @@
         return -1;
       }
 
-      // Draw frame to canvas with aspect-ratio cover
       function drawClashFrame(idx) {
         if (!ctx || !canvas) return;
         idx = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, idx));
@@ -601,7 +619,6 @@
         const iw = img.naturalWidth;
         const ih = img.naturalHeight;
 
-        // Cover calculation
         const imgRatio = iw / ih;
         const canvasRatio = cw / ch;
         let drawW, drawH, offsetX, offsetY;
@@ -626,17 +643,8 @@
         ctx.restore();
 
         lastDrawnClashFrame = frameToDraw;
-
-        // Update HUD
-        const padIdx = (idx + 1).toString().padStart(3, '0');
-        if (hudFrame) hudFrame.textContent = `${padIdx} / ${TOTAL_CLASH_FRAMES}`;
-        if (hudScrubber && !hudScrubber.matches(':active')) {
-          hudScrubber.value = idx;
-        }
-        updateBattlePhaseText(idx);
       }
 
-      // High-performance image preloader with instant cache recognition
       function preloadClashFrames() {
         for (let i = 0; i < TOTAL_CLASH_FRAMES; i++) {
           const img = new Image();
@@ -658,7 +666,6 @@
           img.src = `/static/clash_frames/frame_${frameNum}.jpg`;
           clashImages[i] = img;
 
-          // If cached in memory
           if (img.complete && img.naturalWidth > 0) {
             loadedFrames[i] = true;
             if (i === 0 && lastDrawnClashFrame < 0) {
@@ -668,11 +675,17 @@
         }
       }
 
-      // Smooth 60fps Lerp Render Loop
+      // Smooth Ambient Render Loop
+      let ambientCounter = 0;
       function renderLoop() {
+        // Gentle ambient drift through frames in the background
+        ambientCounter++;
+        if (ambientCounter % 4 === 0) {
+          targetClashFrame = (targetClashFrame + 1) % TOTAL_CLASH_FRAMES;
+        }
+
         const diff = targetClashFrame - currentClashFrame;
-        // Inertial damping factor
-        currentClashFrame += diff * 0.14;
+        currentClashFrame += diff * 0.1;
 
         const frameIdx = Math.round(currentClashFrame);
         const clampedIdx = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, frameIdx));
@@ -684,84 +697,6 @@
         requestAnimationFrame(renderLoop);
       }
 
-      // Scroll Progress Handler
-      function handleScrollProgress(progress) {
-        if (isClashPlaying) return;
-        targetClashFrame = Math.max(0, Math.min(1, progress)) * (TOTAL_CLASH_FRAMES - 1);
-      }
-
-      function computeNativeScrollProgress() {
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        if (maxScroll <= 0) return 0;
-        return Math.max(0, Math.min(1, (window.scrollY || window.pageYOffset) / maxScroll));
-      }
-
-      // Initialize Lenis Smooth Scrolling
-      if (typeof Lenis !== 'undefined') {
-        const lenis = new Lenis({
-          duration: 1.1,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
-          wheelMultiplier: 0.9,
-          touchMultiplier: 1.5,
-        });
-
-        function raf(time) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        lenis.on('scroll', (e) => {
-          if (typeof e.progress === 'number') {
-            handleScrollProgress(e.progress);
-          } else {
-            handleScrollProgress(computeNativeScrollProgress());
-          }
-        });
-      } else {
-        window.addEventListener('scroll', () => {
-          handleScrollProgress(computeNativeScrollProgress());
-        }, { passive: true });
-      }
-
-      // Manual Scrubber Slider
-      if (hudScrubber) {
-        hudScrubber.addEventListener('input', (e) => {
-          targetClashFrame = parseInt(e.target.value);
-          currentClashFrame = targetClashFrame;
-          drawClashFrame(targetClashFrame);
-        });
-      }
-
-      // Play / Pause Button
-      if (playBtn) {
-        playBtn.addEventListener('click', () => {
-          isClashPlaying = !isClashPlaying;
-          if (isClashPlaying) {
-            playBtn.innerHTML = '<span>⏸ Pause</span>';
-            playBtn.classList.add('bg-blood-700', 'text-white');
-            playInterval = setInterval(() => {
-              targetClashFrame = (targetClashFrame + 1) % TOTAL_CLASH_FRAMES;
-              currentClashFrame = targetClashFrame;
-              drawClashFrame(targetClashFrame);
-            }, 1000 / 24);
-          } else {
-            playBtn.innerHTML = '<span>▶ Play</span>';
-            playBtn.classList.remove('bg-blood-700', 'text-white');
-            clearInterval(playInterval);
-          }
-        });
-      }
-
-      // Expose quick jump function
-      window.jumpToClashFrame = function(idx) {
-        targetClashFrame = Math.max(0, Math.min(TOTAL_CLASH_FRAMES - 1, idx));
-        currentClashFrame = targetClashFrame;
-        drawClashFrame(targetClashFrame);
-      };
-
-      // Immediate initialization
       resizeCanvas();
       preloadClashFrames();
       requestAnimationFrame(renderLoop);
@@ -798,6 +733,34 @@
       const arr = new Uint8Array(3);
       window.crypto.getRandomValues(arr);
       return 'DMC-' + Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    // Telemetry Audit Logging Helper
+    function logEvent(tag, message, level = 'info') {
+      const terminal = document.getElementById('attack-log-terminal');
+      if (!terminal) return;
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const colorMap = {
+        info: 'text-parchment-300',
+        gold: 'text-doubloon-400',
+        blood: 'text-red-400',
+        kraken: 'text-teal-300',
+        warn: 'text-amber-400'
+      };
+      const colorClass = colorMap[level] || 'text-parchment-300';
+      const entry = document.createElement('div');
+      entry.className = colorClass;
+      entry.innerHTML = `<span class="text-parchment-500">[${timeStr}]</span> <span class="font-bold font-mono">[${tag}]</span> ${message}`;
+      terminal.appendChild(entry);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearAttackLog() {
+      const terminal = document.getElementById('attack-log-terminal');
+      if (terminal) {
+        terminal.innerHTML = '<div class="text-parchment-500">[SYSTEM] Telemetry log cleared. Monitoring high seas transmissions.</div>';
+      }
     }
 
     function setSamplePreset() {
@@ -874,6 +837,30 @@
         // Update Interceptor view
         document.getElementById('interceptor-original-preview').textContent = fullPlaintext;
 
+        // Pipeline visualizer updates
+        const pipelineStatus = document.getElementById('pipeline-status-text');
+        if (pipelineStatus) pipelineStatus.textContent = `Packet #${msgId} Broadcasted`;
+        
+        const senderBadge = document.getElementById('node-sender-badge');
+        if (senderBadge) {
+          senderBadge.textContent = 'BROADCASTED';
+          senderBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-doubloon-500/20 border border-doubloon-400 text-[9px] font-mono text-doubloon-300 font-bold';
+        }
+
+        const ch1Status = document.getElementById('channel-1-status');
+        if (ch1Status) {
+          ch1Status.textContent = 'Captured by Middle Interceptor';
+          ch1Status.className = 'text-[9px] font-mono text-blood-400 mt-0.5 font-bold';
+        }
+
+        const interceptorBadge = document.getElementById('node-interceptor-badge');
+        if (interceptorBadge) {
+          interceptorBadge.textContent = 'PACKET CAPTURED';
+          interceptorBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-blood-900 border border-blood-500 text-[9px] font-mono text-white font-bold animate-pulse';
+        }
+
+        logEvent('BROADCAST', `Captain Blackbeard sealed transmission #${msgId}. Length: ${ciphertext.length} chars, HMAC SHA-256: ${sha.slice(0, 16)}...`, 'gold');
+
         if (window.soundSynth) {
           window.soundSynth.playCannon();
           setTimeout(() => window.soundSynth.playCoinClink(), 300);
@@ -903,6 +890,7 @@
         modifiedPlaintext: null
       };
 
+      logEvent('BYPASS', `Clean transmission #${currentOriginalTransmission.messageId} routed directly to Quartermaster Bob (Bypassing Eve).`, 'kraken');
       deliverPacketToReceiver();
     }
 
@@ -944,6 +932,23 @@
         modifiedPlaintext: modifiedText
       };
 
+      logEvent('INTERCEPT', `Attacker Eve altered payload for #${packetInTransit.messageId}. Mode: ${mode.toUpperCase()}. Forwarded to Bob.`, 'blood');
+
+      const pipelineStatus = document.getElementById('pipeline-status-text');
+      if (pipelineStatus) pipelineStatus.textContent = `Tampered Packet Forwarded`;
+
+      const interceptorBadge = document.getElementById('node-interceptor-badge');
+      if (interceptorBadge) {
+        interceptorBadge.textContent = 'PAYLOAD FORGED';
+        interceptorBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-blood-900 border border-blood-500 text-[9px] font-mono text-white font-bold';
+      }
+
+      const ch2Status = document.getElementById('channel-2-status');
+      if (ch2Status) {
+        ch2Status.textContent = 'Tampered Packet in Transit ➔ Bob';
+        ch2Status.className = 'text-[9px] font-mono text-blood-400 mt-0.5 font-bold';
+      }
+
       if (window.soundSynth) window.soundSynth.playCannon();
       deliverPacketToReceiver();
     }
@@ -954,6 +959,12 @@
       document.getElementById('receiver-security-mode').className = packetInTransit.mode === 'unauthenticated' ? 'text-blood-400 font-bold' : 'text-doubloon-400 font-bold';
       document.getElementById('receiver-status-pill').textContent = 'Packet Delivered';
       document.getElementById('receiver-status-pill').className = 'px-2 py-0.5 rounded-full bg-doubloon-500/20 border border-doubloon-400/50 text-[9px] sm:text-[10px] font-mono text-doubloon-300';
+
+      const receiverBadge = document.getElementById('node-receiver-badge');
+      if (receiverBadge) {
+        receiverBadge.textContent = 'PACKET ARRIVED';
+        receiverBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-amber-950 border border-amber-400 text-[9px] font-mono text-amber-300 font-bold';
+      }
 
       executeReceiverVerification();
     }
@@ -1011,6 +1022,14 @@
         sDesc.textContent = 'The transmission arrived unaltered from Captain Blackbeard. Cryptographic authentication and coordinates verified.';
         sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-kraken-900 border border-kraken-400 text-xs font-mono text-kraken-300 font-bold">✓ AUTHENTIC</span>';
 
+        const receiverBadge = document.getElementById('node-receiver-badge');
+        if (receiverBadge) {
+          receiverBadge.textContent = 'VERIFIED AUTHENTIC';
+          receiverBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-teal-900 border border-teal-400 text-[9px] font-mono text-teal-200 font-bold';
+        }
+
+        logEvent('VERIFIED', `Quartermaster Bob validated transmission #${p.messageId}. SHA-256 HMAC and AES-GCM tag authenticated!`, 'kraken');
+
         processedMessageIds.add(p.messageId);
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
         if (window.soundSynth) window.soundSynth.playCoinClink();
@@ -1044,6 +1063,14 @@
         sDesc.textContent = `The interceptor changed the secret message to: "${p.modifiedPlaintext}". Without authenticated encryption, the receiver had no way to detect the tampering and accepted the fake orders!`;
         sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-blood-900 border border-blood-500 text-xs font-mono text-blood-300 font-bold">RECEIVER DECEIVED</span>';
 
+        const receiverBadge = document.getElementById('node-receiver-badge');
+        if (receiverBadge) {
+          receiverBadge.textContent = 'DECEIVED (FAKE TEXT)';
+          receiverBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-blood-900 border border-blood-500 text-[9px] font-mono text-white font-bold';
+        }
+
+        logEvent('EXPLOIT', `UNAUTHENTICATED ATTACK SUCCEEDED: Bob displayed modified text without integrity verification.`, 'blood');
+
         if (window.soundSynth) window.soundSynth.playCreak();
         return;
       }
@@ -1075,6 +1102,14 @@
         sTitle.className = 'font-pirate text-xl sm:text-2xl text-kraken-300';
         sDesc.textContent = `The interceptor modified the text to "${p.modifiedPlaintext}". However, the Galois/Counter Mode authentication tag failed, and the receiver discarded the forged transmission!`;
         sBadge.innerHTML = '<span class="px-3 py-1 rounded-full bg-kraken-900 border border-kraken-400 text-xs font-mono text-kraken-300 font-bold">FORGERY REJECTED</span>';
+
+        const receiverBadge = document.getElementById('node-receiver-badge');
+        if (receiverBadge) {
+          receiverBadge.textContent = 'FORGERY BLOCKED';
+          receiverBadge.className = 'inline-block mt-1.5 px-2.5 py-0.5 rounded-full bg-blood-950 border border-blood-500 text-[9px] font-mono text-blood-400 font-bold';
+        }
+
+        logEvent('DEFENSE', `FORGERY BLOCKED: Bob detected 128-bit GHASH authentication tag mismatch on packet #${p.messageId}! Tampered message rejected.`, 'gold');
 
         if (window.soundSynth) window.soundSynth.playCreak();
       }
