@@ -147,31 +147,53 @@
   </div>
 
   <!-- ================= TABLET & PC VIEW: FLOATING STORY STAGES (OVERLAID) ================= -->
-  <div id="floating-stages-container" class="fixed inset-0 pointer-events-none z-30 hidden md:flex items-center justify-center p-6 md:p-12">
+  <div id="floating-stages-container" class="fixed inset-0 pointer-events-none z-30 hidden md:block">
     <!-- STAGE 0: PROLOGUE / HERO -->
-    <div id="stage-hero" class="text-center max-w-3xl flex flex-col items-center transition-all duration-300">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-abyss-900/80 border border-brass/40 text-doubloon-400 text-xs font-cinzel tracking-widest uppercase mb-4 shadow-xl">
-        ✦ Smooth Inertial Video Scrubbing ✦
-      </div>
-      <h2 class="font-pirate text-5xl sm:text-7xl md:text-8xl gold-gradient-text tracking-wide drop-shadow-[0_10px_20px_rgba(0,0,0,0.95)] mb-4">
-        Dead Men Tell Tales
-      </h2>
-      <p class="font-parchment text-lg sm:text-2xl text-parchment-300 max-w-xl leading-relaxed italic drop-shadow-md mb-8">
-        "Beyond the edge of every chart lies a kingdom of shadows and gold. Take the helm, sailor, and cast your fate to the tides."
-      </p>
-      <div class="flex flex-col items-center gap-2 text-doubloon-400 animate-bounce">
-        <span class="font-cinzel text-xs tracking-widest uppercase text-parchment-400">
-          Scroll Down to Navigate
-        </span>
-        <svg class="w-6 h-6 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m6 9 6 6 6-6"/>
-        </svg>
+    <div id="stage-hero" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none transition-all duration-300">
+      <div class="max-w-3xl flex flex-col items-center">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-abyss-900/80 border border-brass/40 text-doubloon-400 text-xs font-cinzel tracking-widest uppercase mb-4 shadow-xl">
+          ✦ Smooth Inertial Video Scrubbing ✦
+        </div>
+        <h2 class="font-pirate text-5xl sm:text-7xl md:text-8xl gold-gradient-text tracking-wide drop-shadow-[0_10px_20px_rgba(0,0,0,0.95)] mb-3">
+          Dead Men Tell Tales
+        </h2>
+        <p class="font-parchment text-lg sm:text-2xl text-parchment-300 max-w-xl leading-relaxed italic drop-shadow-md mb-6">
+          "Beyond the edge of every chart lies a kingdom of shadows and gold. Take the helm, sailor, and cast your fate to the tides."
+        </p>
+
+        <!-- Three Chambers Quick-Preview Chips -->
+        <div class="flex items-center justify-center gap-2.5 flex-wrap mb-8 pointer-events-auto">
+          <a href="/attack-simulator" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-abyss-900/90 hover:bg-red-950/80 border border-red-500/40 hover:border-red-400 text-xs font-cinzel text-red-200 transition-all shadow-lg hover:scale-105">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span>⚔️ Attack Simulator</span>
+            <span class="text-[10px] text-red-400 font-mono">MITM Raid</span>
+          </a>
+          <a href="/encrypt" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-abyss-900/90 hover:bg-amber-950/80 border border-doubloon-500/40 hover:border-doubloon-400 text-xs font-cinzel text-doubloon-200 transition-all shadow-lg hover:scale-105">
+            <span class="w-2 h-2 rounded-full bg-doubloon-400"></span>
+            <span>📜 Cipher Desk</span>
+            <span class="text-[10px] text-doubloon-400 font-mono">AES-256</span>
+          </a>
+          <a href="/steganography" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-abyss-900/90 hover:bg-teal-950/80 border border-kraken-400/40 hover:border-kraken-400 text-xs font-cinzel text-teal-200 transition-all shadow-lg hover:scale-105">
+            <span class="w-2 h-2 rounded-full bg-kraken-400"></span>
+            <span>🗺️ Steganography</span>
+            <span class="text-[10px] text-kraken-300 font-mono">Invisible Ink</span>
+          </a>
+        </div>
+
+        <div class="flex flex-col items-center gap-2 text-doubloon-400 animate-bounce pointer-events-none">
+          <span class="font-cinzel text-xs tracking-widest uppercase text-parchment-400">
+            Scroll Down to Navigate
+          </span>
+          <svg class="w-6 h-6 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
       </div>
     </div>
 
     <!-- STAGE 1: ACT I (Left Card) -->
-    <div id="stage-act1" class="absolute left-6 md:left-14 max-w-md opacity-0 transition-all duration-300">
-      <div class="parchment-card p-6 md:p-8 rounded-2xl border border-brass/30 backdrop-blur-xl">
+    <div id="stage-act1" class="absolute inset-y-0 left-6 md:left-14 flex items-center max-w-md pointer-events-none opacity-0 transition-all duration-300">
+      <div class="parchment-card p-6 md:p-8 rounded-2xl border border-brass/30 backdrop-blur-xl pointer-events-auto">
         <div class="flex items-center gap-2 text-doubloon-400 text-xs font-cinzel tracking-widest uppercase mb-2">
           <svg class="w-4 h-4 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -188,12 +210,19 @@
           <span>Heading: 312° NW</span>
           <span class="text-doubloon-400 font-bold">Depth: 84 Fathoms</span>
         </div>
+        <div class="mt-3 pt-3 border-t border-brass/20 flex items-center justify-between">
+          <span class="text-[11px] font-parchment italic text-parchment-400">Need unbreakable secrecy?</span>
+          <a href="/encrypt" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-doubloon-500/10 hover:bg-doubloon-500/30 border border-doubloon-400/40 text-[11px] font-cinzel text-doubloon-300 transition">
+            <span>📜 Open Cipher Desk</span>
+            <span>➔</span>
+          </a>
+        </div>
       </div>
     </div>
 
     <!-- STAGE 2: ACT II (Right Card) -->
-    <div id="stage-act2" class="absolute right-6 md:right-14 max-w-md opacity-0 transition-all duration-300">
-      <div class="parchment-card-emerald p-6 md:p-8 rounded-2xl backdrop-blur-xl">
+    <div id="stage-act2" class="absolute inset-y-0 right-6 md:right-14 flex items-center max-w-md pointer-events-none opacity-0 transition-all duration-300">
+      <div class="parchment-card-emerald p-6 md:p-8 rounded-2xl backdrop-blur-xl pointer-events-auto">
         <div class="flex items-center gap-2 text-kraken-400 text-xs font-cinzel tracking-widest uppercase mb-2">
           <svg class="w-4 h-4 text-kraken-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2a10 10 0 0 0-10 10c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69"/>
@@ -210,12 +239,19 @@
           <span class="text-kraken-300">Wind: Gale Force 9</span>
           <span class="text-red-400 font-bold">Hull Integrity: 74%</span>
         </div>
+        <div class="mt-3 pt-3 border-t border-kraken-500/20 flex items-center justify-between">
+          <span class="text-[11px] font-parchment italic text-parchment-400">Hostile ships intercepting</span>
+          <a href="/attack-simulator" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-900/30 hover:bg-red-900/60 border border-red-500/40 text-[11px] font-cinzel text-red-200 transition">
+            <span>⚔️ Launch Attack Sim</span>
+            <span>➔</span>
+          </a>
+        </div>
       </div>
     </div>
 
     <!-- STAGE 3: ACT III (Center Card) -->
-    <div id="stage-act3" class="max-w-xl text-center opacity-0 transition-all duration-300">
-      <div class="parchment-box p-8 md:p-10 rounded-2xl border-2 border-brass/50 shadow-2xl">
+    <div id="stage-act3" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none opacity-0 transition-all duration-300">
+      <div class="max-w-xl parchment-box p-8 md:p-10 rounded-2xl border-2 border-brass/50 shadow-2xl pointer-events-auto">
         <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-doubloon-500/20 border border-doubloon-400/60 flex items-center justify-center">
           <svg class="w-6 h-6 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
@@ -233,21 +269,126 @@
         <button id="claim-doubloon-btn" class="inline-flex items-center gap-2 bg-gradient-to-r from-doubloon-600 via-doubloon-400 to-amber-300 hover:brightness-110 text-abyss-950 font-bold font-cinzel px-7 py-3 rounded-full text-sm shadow-xl shadow-doubloon-500/30 transform hover:-translate-y-0.5 active:translate-y-0 transition">
           <span>Claim Cursed Doubloon</span>
         </button>
+        <div class="mt-4 pt-3 border-t border-brass/20 flex items-center justify-center gap-2">
+          <span class="text-xs font-parchment italic text-parchment-400">Hide vault coordinates:</span>
+          <a href="/steganography" class="inline-flex items-center gap-1 text-xs font-cinzel text-kraken-300 hover:text-kraken-200 underline decoration-kraken-400/40 underline-offset-4 transition">
+            <span>Inscribe Chart (Steganography) ➔</span>
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- STAGE 4: EPILOGUE -->
-    <div id="stage-epilogue" class="text-center max-w-2xl opacity-0 transition-all duration-300">
-      <div class="parchment-card p-8 rounded-2xl border border-brass/40 backdrop-blur-2xl">
-        <h3 class="font-pirate text-4xl md:text-6xl text-parchment-100 mb-3">
-          The Legend Lives On
-        </h3>
-        <p class="font-parchment text-base text-parchment-300 leading-relaxed italic mb-6">
-          The voyage of the Black Flag is complete. Replay the odyssey or explore the charts in the Captain's Log.
-        </p>
-        <div class="flex items-center justify-center gap-4">
-          <button id="scroll-top-btn" class="px-6 py-3 rounded-full bg-doubloon-500 hover:bg-doubloon-400 text-abyss-950 font-bold text-xs font-cinzel tracking-wider uppercase transition shadow-lg">
-            Return to Port (Scroll to Top)
+    <!-- STAGE 4: EPILOGUE (Command Arsenal Deck) -->
+    <div id="stage-epilogue" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none opacity-0 transition-all duration-300">
+      <div class="w-full max-w-4xl max-h-[85vh] overflow-y-auto parchment-box p-6 md:p-8 rounded-3xl border border-brass/50 backdrop-blur-2xl shadow-2xl space-y-5 pointer-events-auto">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-abyss-900/90 border border-doubloon-400/50 text-doubloon-400 text-xs font-cinzel tracking-widest uppercase mb-1.5">
+            ✦ The Grand Pirate Citadel ✦
+          </div>
+          <h3 class="font-pirate text-3xl md:text-5xl gold-gradient-text tracking-wide mb-1">
+            The Fleet Arsenal & Havens
+          </h3>
+          <p class="font-parchment text-xs md:text-sm text-parchment-300 italic max-w-xl mx-auto">
+            Your voyage across the Black Flag is complete. Commandeer the three secret stations guarding our high-seas intelligence:
+          </p>
+        </div>
+
+        <!-- 3 Flagship Stations Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left">
+          <!-- Station 1: Attack Simulator -->
+          <div class="station-card-crimson rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-2xl">⚔️</span>
+                <span class="px-2 py-0.5 rounded-full bg-red-950/80 border border-red-500/60 text-[9px] font-mono text-red-300 font-bold uppercase tracking-wider">
+                  Live MITM
+                </span>
+              </div>
+              <h4 class="font-pirate text-2xl text-red-200 mb-1">Attack Simulator</h4>
+              <p class="font-parchment text-xs text-parchment-300 italic leading-relaxed mb-2.5">
+                Simulate man-in-the-middle naval warfare. Intercept packets between Galleon Alice & Bob, alter messages, and trigger HMAC-SHA256 tamper alarms.
+              </p>
+              <div class="space-y-1 text-[11px] font-mono text-red-300/90 bg-abyss-950/60 p-2.5 rounded-xl border border-red-900/40">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-red-400">✔</span> Live Packet Interceptor
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-red-400">✔</span> HMAC-SHA256 Integrity
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-red-400">✔</span> Real-Time Attack Telemetry
+                </div>
+              </div>
+            </div>
+            <a href="/attack-simulator" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-blood-700 hover:brightness-110 text-white font-cinzel font-bold text-xs text-center shadow-lg transition block">
+              ⚔️ Launch Attack Sim ➔
+            </a>
+          </div>
+
+          <!-- Station 2: Cipher Desk -->
+          <div class="station-card-gold rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-2xl">📜</span>
+                <span class="px-2 py-0.5 rounded-full bg-amber-950/80 border border-doubloon-400/60 text-[9px] font-mono text-doubloon-300 font-bold uppercase tracking-wider">
+                  AES-256-GCM
+                </span>
+              </div>
+              <h4 class="font-pirate text-2xl gold-gradient-text mb-1">Cipher Desk</h4>
+              <p class="font-parchment text-xs text-parchment-300 italic leading-relaxed mb-2.5">
+                Military-grade authenticated encryption. Encode secret navigational orders with 128-bit authentication tags, PBKDF2 salt derivation, or Caesar mode.
+              </p>
+              <div class="space-y-1 text-[11px] font-mono text-doubloon-300/90 bg-abyss-950/60 p-2.5 rounded-xl border border-doubloon-900/40">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-doubloon-400">✔</span> AES-256-GCM Auth Tags
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-doubloon-400">✔</span> PBKDF2 Key Derivation
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-doubloon-400">✔</span> Historical Caesar Mode
+                </div>
+              </div>
+            </div>
+            <a href="/encrypt" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-doubloon-600 to-amber-500 hover:brightness-110 text-abyss-950 font-cinzel font-bold text-xs text-center shadow-lg transition block">
+              📜 Enter Cipher Desk ➔
+            </a>
+          </div>
+
+          <!-- Station 3: Steganography -->
+          <div class="station-card-kraken rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-2xl">🗺️</span>
+                <span class="px-2 py-0.5 rounded-full bg-teal-950/80 border border-kraken-400/60 text-[9px] font-mono text-kraken-300 font-bold uppercase tracking-wider">
+                  1-Bit LSB
+                </span>
+              </div>
+              <h4 class="font-pirate text-2xl text-kraken-300 mb-1">Sea Chart Stego</h4>
+              <p class="font-parchment text-xs text-parchment-300 italic leading-relaxed mb-2.5">
+                Conceal classified treasure maps in plain sight. Inscribe data into pixel color channels using invisible LSB embedding with optional AES-256 encryption.
+              </p>
+              <div class="space-y-1 text-[11px] font-mono text-kraken-300/90 bg-abyss-950/60 p-2.5 rounded-xl border border-teal-900/40">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-kraken-400">✔</span> 1-Bit LSB Invisible Ink
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-kraken-400">✔</span> Dual-Layer AES Security
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-kraken-400">✔</span> Instant Image Extraction
+                </div>
+              </div>
+            </div>
+            <a href="/steganography" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-kraken-500 to-teal-600 hover:brightness-110 text-abyss-950 font-cinzel font-bold text-xs text-center shadow-lg transition block">
+              🗺️ Open Stego Lab ➔
+            </a>
+          </div>
+        </div>
+
+        <div class="pt-1 flex items-center justify-center gap-4">
+          <button id="scroll-top-btn" class="px-6 py-2 rounded-full bg-abyss-900 hover:bg-abyss-800 border border-brass/50 text-parchment-200 hover:text-doubloon-400 font-bold text-xs font-cinzel tracking-wider uppercase transition shadow-lg">
+            ⚓ Return to Port (Scroll to Top)
           </button>
         </div>
       </div>
@@ -271,22 +412,122 @@
       </p>
 
       <!-- Mobile Quick Action Buttons -->
-      <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <a href="/attack-simulator" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-blood-700 to-red-800 text-white font-cinzel font-bold text-xs shadow-lg active:scale-95 transition">
-          <span>⚔️ Attack Simulator</span>
+      <div class="pt-2 grid grid-cols-2 gap-2">
+        <a href="/attack-simulator" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-blood-700 to-red-800 text-white font-cinzel font-bold text-xs shadow-lg active:scale-95 transition">
+          <span>⚔️ Attack Sim</span>
         </a>
-        <a href="/encrypt" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-doubloon-600 to-doubloon-500 text-abyss-950 font-cinzel font-bold text-xs shadow-lg active:scale-95 transition">
+        <a href="/encrypt" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-doubloon-600 to-amber-500 text-abyss-950 font-cinzel font-bold text-xs shadow-lg active:scale-95 transition">
           <span>📜 Cipher Desk</span>
         </a>
-        <a href="/steganography" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-abyss-900 border border-kraken-400/50 text-kraken-300 font-cinzel font-bold text-xs shadow-md active:scale-95 transition">
-          <span>🗺️ Steganography</span>
+        <a href="/steganography" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-kraken-500/20 to-teal-800/40 border border-kraken-400/50 text-kraken-300 font-cinzel font-bold text-xs shadow-md active:scale-95 transition">
+          <span>🗺️ Stego Maps</span>
         </a>
-        <button onclick="document.getElementById('open-log-btn').click()" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-abyss-900 border border-brass/40 text-parchment-200 font-cinzel font-bold text-xs shadow-md active:scale-95 transition">
-          <span>📖 Captain's Log</span>
+        <button onclick="document.getElementById('open-log-btn').click()" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-abyss-900 border border-brass/40 text-parchment-200 font-cinzel font-bold text-xs shadow-md active:scale-95 transition">
+          <span>📖 Ship's Log</span>
         </button>
       </div>
     </div>
 
+    <!-- ================= MOBILE THE THREE SECRET HAVENS ================= -->
+    <div class="space-y-4">
+      <div class="text-center">
+        <span class="text-[10px] font-cinzel text-doubloon-400 tracking-widest uppercase block mb-1">
+          ✦ Interactive Stations ✦
+        </span>
+        <h3 class="font-pirate text-3xl gold-gradient-text">
+          The Three Secret Havens
+        </h3>
+        <p class="font-parchment text-xs text-parchment-300 italic">
+          Explore each chamber to test naval cryptography, interception, and covert cartography:
+        </p>
+      </div>
+
+      <!-- Station 1: Attack Simulator -->
+      <div class="station-card-crimson rounded-2xl p-5 border border-red-500/40 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">⚔️</span>
+            <div>
+              <span class="text-[9px] font-mono text-red-400 uppercase font-bold block">Naval Warfare</span>
+              <h4 class="font-pirate text-2xl text-red-200">MITM Attack Simulator</h4>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-red-950 border border-red-500 text-[9px] font-mono text-red-300 font-bold">
+            LIVE MITM
+          </span>
+        </div>
+        <p class="font-parchment text-xs text-parchment-200 italic leading-relaxed">
+          Intercept pirate dispatches between Galleon Alice & Outpost Bob. Alter payload contents in flight, command pirate Eve to hijack packets, and observe real-time HMAC-SHA256 tamper alarms.
+        </p>
+        <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-red-300 bg-abyss-950/70 p-2.5 rounded-xl border border-red-900/40">
+          <div>• Live Node Interceptor</div>
+          <div>• HMAC-SHA256 Integrity</div>
+          <div>• Cannon SFX Clashes</div>
+          <div>• Live Attack Feed</div>
+        </div>
+        <a href="/attack-simulator" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-blood-700 text-white font-cinzel font-bold text-xs text-center shadow-lg active:scale-95 transition block">
+          ⚔️ Launch Attack Simulator ➔
+        </a>
+      </div>
+
+      <!-- Station 2: Cipher Desk -->
+      <div class="station-card-gold rounded-2xl p-5 border border-doubloon-400/40 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📜</span>
+            <div>
+              <span class="text-[9px] font-mono text-doubloon-400 uppercase font-bold block">Military-Grade</span>
+              <h4 class="font-pirate text-2xl gold-gradient-text">Dead Man's Cipher Desk</h4>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-amber-950 border border-doubloon-400 text-[9px] font-mono text-doubloon-300 font-bold">
+            AES-256-GCM
+          </span>
+        </div>
+        <p class="font-parchment text-xs text-parchment-200 italic leading-relaxed">
+          Lock treasure manifestos with authenticated AES-256-GCM encryption. Inspect 128-bit authentication tags, tamper verification, PBKDF2 salt derivation, or switch to Caesar shift ciphers.
+        </p>
+        <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-doubloon-300 bg-abyss-950/70 p-2.5 rounded-xl border border-doubloon-900/40">
+          <div>• AES-256-GCM Tag</div>
+          <div>• PBKDF2 Salt & IV</div>
+          <div>• Tamper Detection</div>
+          <div>• Historical Caesar</div>
+        </div>
+        <a href="/encrypt" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-doubloon-600 to-amber-500 text-abyss-950 font-cinzel font-bold text-xs text-center shadow-lg active:scale-95 transition block">
+          📜 Enter Cipher Desk ➔
+        </a>
+      </div>
+
+      <!-- Station 3: Steganography -->
+      <div class="station-card-kraken rounded-2xl p-5 border border-kraken-400/40 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🗺️</span>
+            <div>
+              <span class="text-[9px] font-mono text-kraken-400 uppercase font-bold block">Invisible Ink</span>
+              <h4 class="font-pirate text-2xl text-kraken-300">Cursed Chart Stego Lab</h4>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-teal-950 border border-kraken-400 text-[9px] font-mono text-kraken-300 font-bold">
+            1-BIT LSB
+          </span>
+        </div>
+        <p class="font-parchment text-xs text-parchment-200 italic leading-relaxed">
+          Inscribe coordinates invisibly into nautical charts using 1-bit Least Significant Bit manipulation. Features optional dual-layer AES-256 encryption and instant payload extraction.
+        </p>
+        <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-kraken-300 bg-abyss-950/70 p-2.5 rounded-xl border border-teal-900/40">
+          <div>• 1-Bit LSB Embedding</div>
+          <div>• Zero Pixel Distortion</div>
+          <div>• Dual-Layer AES Ink</div>
+          <div>• Instant Extraction</div>
+        </div>
+        <a href="/steganography" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-kraken-500 to-teal-600 text-abyss-950 font-cinzel font-bold text-xs text-center shadow-lg active:scale-95 transition block">
+          🗺️ Open Steganography Lab ➔
+        </a>
+      </div>
+    </div>
+
+    <!-- ================= MOBILE STORY ACTS ================= -->
     <!-- Mobile Act I -->
     <div class="mobile-card rounded-2xl p-5 space-y-3">
       <div class="flex items-center gap-2 text-doubloon-400 text-[10px] font-cinzel tracking-widest uppercase">
@@ -299,6 +540,11 @@
       <div class="flex items-center justify-between border-t border-brass/20 pt-2 text-[11px] font-mono text-parchment-400">
         <span>Heading: 312° NW</span>
         <span class="text-doubloon-400 font-bold">Depth: 84 Fathoms</span>
+      </div>
+      <div class="pt-1">
+        <a href="/encrypt" class="inline-flex items-center gap-1 text-[11px] font-cinzel text-doubloon-300 hover:text-doubloon-200 underline decoration-doubloon-400/40">
+          <span>📜 Lock coordinates in Cipher Desk ➔</span>
+        </a>
       </div>
     </div>
 
@@ -314,6 +560,11 @@
       <div class="flex items-center justify-between border-t border-kraken-500/20 pt-2 text-[11px] font-mono text-parchment-400">
         <span class="text-kraken-300">Wind: Gale Force 9</span>
         <span class="text-red-400 font-bold">Hull: 74%</span>
+      </div>
+      <div class="pt-1">
+        <a href="/attack-simulator" class="inline-flex items-center gap-1 text-[11px] font-cinzel text-red-300 hover:text-red-200 underline decoration-red-400/40">
+          <span>⚔️ Repel phantom raiders in Attack Simulator ➔</span>
+        </a>
       </div>
     </div>
 
@@ -334,6 +585,11 @@
       <button onclick="confetti({ particleCount: 60, spread: 70 }); if(window.soundSynth) window.soundSynth.playCoinClink();" class="w-full py-3 rounded-full bg-gradient-to-r from-doubloon-600 via-doubloon-400 to-amber-300 text-abyss-950 font-bold font-cinzel text-xs shadow-lg active:scale-95 transition">
         💰 Claim Cursed Doubloon
       </button>
+      <div class="pt-1">
+        <a href="/steganography" class="inline-flex items-center gap-1 text-[11px] font-cinzel text-kraken-300 hover:text-kraken-200 underline decoration-kraken-400/40">
+          <span>🗺️ Inscribe vault on sea chart (Stego) ➔</span>
+        </a>
+      </div>
     </div>
 
     <!-- Mobile Soundboard & Footer -->
@@ -360,7 +616,7 @@
   <!-- ================= COMPASS & TELEMETRY HUD (TABLET & PC ONLY) ================= -->
   <div class="fixed bottom-6 right-6 z-40 pointer-events-auto hidden md:flex flex-col items-end gap-3">
     <!-- Ambient Ocean Audio Toggle -->
-    <button id="audio-toggle-btn" class="flex items-center gap-2 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/40 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-parchment-200 shadow-xl backdrop-blur-md transition-all duration-300">
+    <button id="audio-toggle-btn" class="flex items-center gap-2 bg-abyss-900/90 hover:bg-abyss-800 border border-brass/40 px-3.5 py-1.5 rounded-full text-xs font-cinzel text-parchment-200 shadow-xl backdrop-blur-md transition-all duration-300 hover:border-doubloon-400">
       <svg class="w-3.5 h-3.5 text-doubloon-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
@@ -434,6 +690,27 @@
             <button id="sfx-creak" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-abyss-950 hover:bg-abyss-800 border border-brass/30 text-[11px] sm:text-xs font-cinzel text-parchment-300 transition">
               ⚓ Ship Timber
             </button>
+          </div>
+        </div>
+
+        <!-- Article III: Station Briefing -->
+        <div class="bg-abyss-900/60 border border-brass/20 rounded-2xl p-3.5 sm:p-4 space-y-2">
+          <h3 class="font-cinzel font-bold text-xs text-doubloon-400 uppercase tracking-widest mb-1">
+            Article III: Dossier of the Three Secret Stations
+          </h3>
+          <div class="space-y-2 text-xs text-parchment-300">
+            <div class="p-2 rounded-xl bg-abyss-950/60 border border-red-500/30">
+              <strong class="text-red-300 font-cinzel">⚔️ MITM Attack Simulator:</strong>
+              <p class="italic mt-0.5">Real-time simulation of Man-in-the-Middle network interception. Pirate Eve tampers with payloads; Bob detects alterations via HMAC-SHA256.</p>
+            </div>
+            <div class="p-2 rounded-xl bg-abyss-950/60 border border-doubloon-500/30">
+              <strong class="text-doubloon-300 font-cinzel">📜 Dead Man's Cipher Desk:</strong>
+              <p class="italic mt-0.5">Authenticated AES-256-GCM symmetric cipher suite with 128-bit authentication tags, PBKDF2 salt derivation, and classic Caesar shift mode.</p>
+            </div>
+            <div class="p-2 rounded-xl bg-abyss-950/60 border border-kraken-400/30">
+              <strong class="text-kraken-300 font-cinzel">🗺️ Cursed Chart Steganography:</strong>
+              <p class="italic mt-0.5">Least Significant Bit (LSB) image steganography hiding confidential missives within sea chart pixels with optional AES multi-layer encryption.</p>
+            </div>
           </div>
         </div>
       </div>

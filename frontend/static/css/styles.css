@@ -85,6 +85,50 @@ body {
   pointer-events: none;
 }
 
+/* Crimson Gradient Text */
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #fee2e2 0%, #f87171 40%, #ef4444 70%, #991b1b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Interactive Station Cards */
+.station-card-crimson {
+  background: radial-gradient(circle at 50% 0%, rgba(153, 27, 27, 0.25) 0%, rgba(10, 18, 30, 0.94) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(220, 38, 38, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.station-card-crimson:hover {
+  border-color: rgba(248, 113, 113, 0.6);
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.9), 0 0 30px rgba(220, 38, 38, 0.3);
+  transform: translateY(-3px);
+}
+
+.station-card-gold {
+  background: radial-gradient(circle at 50% 0%, rgba(202, 138, 4, 0.25) 0%, rgba(10, 18, 30, 0.94) 100%);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(234, 179, 8, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.station-card-gold:hover {
+  border-color: rgba(253, 224, 71, 0.6);
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.9), 0 0 30px rgba(234, 179, 8, 0.3);
+  transform: translateY(-3px);
+}
+
+.station-card-kraken {
+  background: radial-gradient(circle at 50% 0%, rgba(13, 148, 136, 0.25) 0%, rgba(10, 18, 30, 0.94) 100%);
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(20, 184, 166, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.station-card-kraken:hover {
+  border-color: rgba(94, 234, 212, 0.6);
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.9), 0 0 30px rgba(20, 184, 166, 0.3);
+  transform: translateY(-3px);
+}
+
 /* Animation utilities */
 @keyframes spinSlow {
   from { transform: rotate(0deg); }
