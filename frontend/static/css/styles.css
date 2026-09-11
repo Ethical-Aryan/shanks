@@ -77,6 +77,46 @@ body {
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7), 0 0 35px rgba(13, 148, 136, 0.2);
 }
 
+/* Glowing Station Showcase Card Styles */
+.station-card {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.station-card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.station-blood {
+  background: radial-gradient(circle at 50% 0%, rgba(153, 27, 27, 0.25) 0%, rgba(6, 13, 23, 0.92) 80%);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.9), 0 0 25px rgba(220, 38, 38, 0.15);
+}
+.station-blood:hover {
+  border-color: rgba(248, 113, 113, 0.75);
+  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.95), 0 0 35px rgba(239, 68, 68, 0.3);
+}
+
+.station-gold {
+  background: radial-gradient(circle at 50% 0%, rgba(202, 138, 4, 0.22) 0%, rgba(6, 13, 23, 0.92) 80%);
+  border: 1px solid rgba(250, 204, 21, 0.45);
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.9), 0 0 25px rgba(234, 179, 8, 0.15);
+}
+.station-gold:hover {
+  border-color: rgba(253, 224, 71, 0.75);
+  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.95), 0 0 35px rgba(234, 179, 8, 0.3);
+}
+
+.station-kraken {
+  background: radial-gradient(circle at 50% 0%, rgba(13, 148, 136, 0.22) 0%, rgba(6, 13, 23, 0.92) 80%);
+  border: 1px solid rgba(45, 212, 191, 0.45);
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.9), 0 0 25px rgba(20, 184, 166, 0.15);
+}
+.station-kraken:hover {
+  border-color: rgba(94, 234, 212, 0.75);
+  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.95), 0 0 35px rgba(20, 184, 166, 0.3);
+}
+
 /* Vignette overlay */
 .vignette-overlay {
   position: absolute;
